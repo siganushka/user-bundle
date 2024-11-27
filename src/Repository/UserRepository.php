@@ -12,4 +12,8 @@ use Siganushka\UserBundle\Entity\User;
  */
 class UserRepository extends GenericEntityRepository
 {
+    public function findOneByIdentifier(string $identifier): ?User
+    {
+        return $this->findOneBy(compact('identifier'));
+    }
 }
