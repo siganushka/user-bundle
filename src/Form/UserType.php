@@ -5,28 +5,19 @@ declare(strict_types=1);
 namespace Siganushka\UserBundle\Form;
 
 use Siganushka\Contracts\Doctrine\ResourceInterface;
+use Siganushka\UserBundle\Form\Type\RepeatedPasswordType;
 use Siganushka\UserBundle\Form\Type\UserRoleEntityType;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\PasswordType;
-use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Constraints\PasswordStrength;
 
 class UserType extends AbstractType
 {
-    /**
-     * @param PasswordStrength::STRENGTH_*|null $passwordStrengthMinScore
-     */
-    public function __construct(private readonly ?int $passwordStrengthMinScore = null)
-    {
-    }
-
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -39,10 +30,7 @@ class UserType extends AbstractType
                 'label' => 'user.identifier',
                 'constraints' => new NotBlank(),
             ])
-            ->add('plainPassword', RepeatedType::class, [
-                'type' => PasswordType::class,
-                // @see https://symfony.com/doc/current/reference/constraints/PasswordStrength.html
-                'constraints' => new PasswordStrength(minScore: $this->passwordStrengthMinScore),
+            ->add('plainPassword', RepeatedPasswordType::class, [
                 'first_options' => [
                     'label' => 'user.password',
                     'constraints' => new NotBlank(groups: ['NotBlank']),
@@ -59,8 +47,12 @@ class UserType extends AbstractType
     {
         $data = $form->getData();
         if ($data instanceof ResourceInterface && $data->getId()) {
-            $view['plainPassword']['first']->vars['help'] = 'user.password.help';
-            $view['plainPassword']['first']->vars['help_attr'] = ['class' => 'text-warning'];
+            // Using dynamic name for RepeatedType
+            $plainPassword = $form->get('plainPassword');
+            $firstName = $plainPassword->getConfig()->getOption('first_name', 'first');
+
+            $view['plainPassword'][$firstName]->vars['help'] = 'user.password.help';
+            $view['plainPassword'][$firstName]->vars['help_attr'] = ['class' => 'text-warning'];
         }
     }
 

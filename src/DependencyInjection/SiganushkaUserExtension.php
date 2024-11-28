@@ -6,7 +6,7 @@ namespace Siganushka\UserBundle\DependencyInjection;
 
 use Doctrine\ORM\Events;
 use Siganushka\UserBundle\Doctrine\HashPasswordListener;
-use Siganushka\UserBundle\Form\UserType;
+use Siganushka\UserBundle\Form\Type\RepeatedPasswordType;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
@@ -32,8 +32,8 @@ class SiganushkaUserExtension extends Extension implements PrependExtensionInter
         $hashPasswordListener->addTag('doctrine.orm.entity_listener', ['event' => Events::prePersist, 'entity' => $config['user_class']]);
         $hashPasswordListener->addTag('doctrine.orm.entity_listener', ['event' => Events::preUpdate, 'entity' => $config['user_class']]);
 
-        $userType = $container->findDefinition(UserType::class);
-        $userType->setArgument('$passwordStrengthMinScore', $config['password_strength_min_score']);
+        $repeatedPasswordType = $container->findDefinition(RepeatedPasswordType::class);
+        $repeatedPasswordType->setArgument('$passwordStrengthMinScore', $config['password_strength_min_score']);
     }
 
     public function prepend(ContainerBuilder $container): void

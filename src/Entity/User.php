@@ -24,7 +24,6 @@ class User implements ResourceInterface, EnableInterface, TimestampableInterface
     use TimestampableTrait;
 
     #[ORM\ManyToOne(targetEntity: UserRole::class, inversedBy: 'users')]
-    #[ORM\JoinColumn(nullable: false)]
     private ?UserRole $role = null;
 
     #[ORM\Column]
@@ -90,12 +89,15 @@ class User implements ResourceInterface, EnableInterface, TimestampableInterface
 
     public function getRoles(): array
     {
-        return [];
+        $roles = $this->role?->getPermissions() ?? [];
+        $roles[] = 'ROLE_USER';
+
+        return ['ROLE_USER'];
     }
 
     public function eraseCredentials(): void
     {
-        $this->password = $this->plainPassword = null;
+        $this->plainPassword = null;
     }
 
     public function getUserIdentifier(): string
