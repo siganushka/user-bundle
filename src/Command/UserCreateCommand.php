@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Siganushka\UserBundle\Command;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Siganushka\UserBundle\Event\UserBeforeCreateEvent;
-use Siganushka\UserBundle\Event\UserCreatedEvent;
 use Siganushka\UserBundle\Form\UserType;
 use Siganushka\UserBundle\Repository\UserRepository;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -16,13 +14,11 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Form\FormFactoryInterface;
-use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 #[AsCommand('siganushka:user:create', 'Create a new User.')]
 class UserCreateCommand extends Command
 {
     public function __construct(private readonly EntityManagerInterface $entityManager,
-        private readonly EventDispatcherInterface $eventDispatcher,
         private readonly FormFactoryInterface $formFactory,
         private readonly UserRepository $repository)
     {
@@ -61,14 +57,8 @@ class UserCreateCommand extends Command
             throw new \InvalidArgumentException(\sprintf('[%s] %s', $propertyName, $error->getMessage()));
         }
 
-        $event = new UserBeforeCreateEvent($entity);
-        $this->eventDispatcher->dispatch($event);
-
         $this->entityManager->persist($entity);
         $this->entityManager->flush();
-
-        $event = new UserCreatedEvent($entity);
-        $this->eventDispatcher->dispatch($event);
 
         $io = new SymfonyStyle($input, $output);
         $io->success(\sprintf('The user "%s" has been added successfully!', $entity->getIdentifier()));
