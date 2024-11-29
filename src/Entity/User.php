@@ -23,28 +23,13 @@ class User implements ResourceInterface, EnableInterface, TimestampableInterface
     use ResourceTrait;
     use TimestampableTrait;
 
-    #[ORM\ManyToOne(targetEntity: UserRole::class, inversedBy: 'users')]
-    private ?UserRole $role = null;
-
     #[ORM\Column]
     protected ?string $identifier = null;
 
     #[ORM\Column]
     protected ?string $password = null;
 
-    protected ?string $plainPassword = null;
-
-    public function getRole(): ?UserRole
-    {
-        return $this->role;
-    }
-
-    public function setRole(?UserRole $role): self
-    {
-        $this->role = $role;
-
-        return $this;
-    }
+    protected ?string $rawPassword = null;
 
     public function getIdentifier(): ?string
     {
@@ -70,17 +55,17 @@ class User implements ResourceInterface, EnableInterface, TimestampableInterface
         return $this;
     }
 
-    public function getPlainPassword(): ?string
+    public function getRawPassword(): ?string
     {
-        return $this->plainPassword;
+        return $this->rawPassword;
     }
 
-    public function setPlainPassword(?string $plainPassword): self
+    public function setRawPassword(?string $rawPassword): self
     {
-        $this->plainPassword = $plainPassword;
+        $this->rawPassword = $rawPassword;
 
         // [important] Force triggering of Events::preUpdate
-        if ($plainPassword) {
+        if ($rawPassword) {
             $this->password = null;
         }
 
@@ -89,15 +74,12 @@ class User implements ResourceInterface, EnableInterface, TimestampableInterface
 
     public function getRoles(): array
     {
-        $roles = $this->role?->getPermissions() ?? [];
-        $roles[] = 'ROLE_USER';
-
         return ['ROLE_USER'];
     }
 
     public function eraseCredentials(): void
     {
-        $this->plainPassword = null;
+        $this->rawPassword = null;
     }
 
     public function getUserIdentifier(): string

@@ -41,11 +41,5 @@ class RoutesTest extends TestCase
         yield ['siganushka_user_user_getitem', '/users/{id}', ['GET']];
         yield ['siganushka_user_user_putitem', '/users/{id}', ['PUT', 'PATCH']];
         yield ['siganushka_user_user_deleteitem', '/users/{id}', ['DELETE']];
-
-        yield ['siganushka_user_userrole_getcollection', '/user-roles', ['GET']];
-        yield ['siganushka_user_userrole_postcollection', '/user-roles', ['POST']];
-        yield ['siganushka_user_userrole_getitem', '/user-roles/{id}', ['GET']];
-        yield ['siganushka_user_userrole_putitem', '/user-roles/{id}', ['PUT', 'PATCH']];
-        yield ['siganushka_user_userrole_deleteitem', '/user-roles/{id}', ['DELETE']];
     }
 }

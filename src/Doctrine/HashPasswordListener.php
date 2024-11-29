@@ -18,7 +18,7 @@ class HashPasswordListener
 
     public function __invoke(User $entity): void
     {
-        $password = $entity->getPlainPassword();
+        $password = $entity->getRawPassword();
         if (!$password) {
             return;
         }

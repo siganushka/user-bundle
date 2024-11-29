@@ -28,7 +28,6 @@ class UserCreateCommand extends Command
     protected function configure(): void
     {
         $this
-            ->addOption('role', null, InputOption::VALUE_REQUIRED, 'Select user role.')
             ->addOption('identifier', null, InputOption::VALUE_REQUIRED, 'The user unique identifier.')
             ->addOption('password', null, InputOption::VALUE_REQUIRED, 'The password to login.')
         ;
@@ -38,8 +37,8 @@ class UserCreateCommand extends Command
     {
         $password = $input->getOption('password');
 
-        $data = array_intersect_key($input->getOptions(), array_flip(['role', 'identifier']));
-        $data['plainPassword'] = ['first' => $password, 'second' => $password];
+        $data = array_intersect_key($input->getOptions(), array_flip(['identifier']));
+        $data['rawPassword'] = ['first' => $password, 'second' => $password];
 
         $entity = $this->repository->createNew();
 

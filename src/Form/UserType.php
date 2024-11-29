@@ -6,7 +6,6 @@ namespace Siganushka\UserBundle\Form;
 
 use Siganushka\Contracts\Doctrine\ResourceInterface;
 use Siganushka\UserBundle\Form\Type\RepeatedPasswordType;
-use Siganushka\UserBundle\Form\Type\UserRoleEntityType;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -21,22 +20,14 @@ class UserType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('role', UserRoleEntityType::class, [
-                'label' => 'user.role',
-                'placeholder' => 'generic.choice',
-                'constraints' => new NotBlank(),
-            ])
             ->add('identifier', TextType::class, [
-                'label' => 'user.identifier',
                 'constraints' => new NotBlank(),
             ])
-            ->add('plainPassword', RepeatedPasswordType::class, [
+            ->add('rawPassword', RepeatedPasswordType::class, [
                 'first_options' => [
-                    'label' => 'user.password',
                     'constraints' => new NotBlank(groups: ['NotBlank']),
                 ],
                 'second_options' => [
-                    'label' => 'user.password_confirmation',
                     'constraints' => new NotBlank(groups: ['NotBlank']),
                 ],
             ])
@@ -48,11 +39,11 @@ class UserType extends AbstractType
         $data = $form->getData();
         if ($data instanceof ResourceInterface && $data->getId()) {
             // Using dynamic name for RepeatedType
-            $plainPassword = $form->get('plainPassword');
-            $firstName = $plainPassword->getConfig()->getOption('first_name', 'first');
+            $rawPassword = $form->get('rawPassword');
+            $firstName = $rawPassword->getConfig()->getOption('first_name', 'first');
 
-            $view['plainPassword'][$firstName]->vars['help'] = 'user.password.help';
-            $view['plainPassword'][$firstName]->vars['help_attr'] = ['class' => 'text-warning'];
+            $view['rawPassword'][$firstName]->vars['help'] = 'Please do not fill in if you do not want to change the password!';
+            $view['rawPassword'][$firstName]->vars['help_attr'] = ['class' => 'text-warning'];
         }
     }
 

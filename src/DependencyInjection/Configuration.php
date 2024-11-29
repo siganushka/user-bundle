@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace Siganushka\UserBundle\DependencyInjection;
 
 use Siganushka\UserBundle\Entity\User;
-use Siganushka\UserBundle\Entity\UserRole;
 use Siganushka\UserBundle\Repository\UserRepository;
-use Siganushka\UserBundle\Repository\UserRoleRepository;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
@@ -17,7 +15,6 @@ class Configuration implements ConfigurationInterface
 {
     public static array $resourceMapping = [
         'user_class' => [User::class, UserRepository::class],
-        'user_role_class' => [UserRole::class, UserRoleRepository::class],
     ];
 
     public function getConfigTreeBuilder(): TreeBuilder
