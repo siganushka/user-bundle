@@ -24,7 +24,7 @@ class UserType extends AbstractType
             ->add('identifier', TextType::class, [
                 'constraints' => [
                     new NotBlank(),
-                    new Length(min: 4),
+                    new Length(min: 4, max: 32),
                 ],
             ])
             ->add('rawPassword', RepeatedPasswordType::class)
