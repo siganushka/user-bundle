@@ -84,6 +84,6 @@ class User implements ResourceInterface, EnableInterface, TimestampableInterface
 
     public function getUserIdentifier(): string
     {
-        return $this->identifier ?? throw new \InvalidArgumentException('The identifier for user cannot be empty.');
+        return $this->identifier ?? '';
     }
 }

@@ -9,14 +9,14 @@ use Siganushka\UserBundle\Form\UserType;
 use Siganushka\UserBundle\Repository\UserRepository;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Form\FormFactoryInterface;
 
-#[AsCommand('siganushka:user:create', 'Create a new User.')]
-class UserCreateCommand extends Command
+#[AsCommand('siganushka:user:add', 'Add a new User.')]
+class UserAddCommand extends Command
 {
     public function __construct(private readonly EntityManagerInterface $entityManager,
         private readonly FormFactoryInterface $formFactory,
@@ -28,16 +28,17 @@ class UserCreateCommand extends Command
     protected function configure(): void
     {
         $this
-            ->addOption('identifier', null, InputOption::VALUE_REQUIRED, 'The user unique identifier.')
-            ->addOption('password', null, InputOption::VALUE_REQUIRED, 'The password to login.')
+            ->addArgument('identifier', InputArgument::REQUIRED, 'User unique identifier to add.')
+            ->addArgument('password', InputArgument::REQUIRED, 'The password to login.')
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $password = $input->getOption('password');
+        $identifier = $input->getArgument('identifier');
+        $password = $input->getArgument('password');
 
-        $data = array_intersect_key($input->getOptions(), array_flip(['identifier']));
+        $data = compact('identifier');
         $data['rawPassword'] = ['first' => $password, 'second' => $password];
 
         $entity = $this->repository->createNew();
@@ -48,12 +49,12 @@ class UserCreateCommand extends Command
         if (!$form->isValid()) {
             $error = $form->getErrors(true, true)->current();
 
-            $propertyName = $error->getOrigin()?->getName() ?? $form->getName();
-            if (\in_array($propertyName, ['first', 'second'])) {
-                $propertyName = 'password';
+            $field = $error->getOrigin()?->getName() ?? $form->getName();
+            if (\in_array($field, ['first', 'second'])) {
+                $field = 'password';
             }
 
-            throw new \InvalidArgumentException(\sprintf('[%s] %s', $propertyName, $error->getMessage()));
+            throw new \InvalidArgumentException(\sprintf('[%s] %s', $field, $error->getMessage()));
         }
 
         $this->entityManager->persist($entity);

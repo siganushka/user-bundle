@@ -13,6 +13,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 class UserType extends AbstractType
@@ -21,16 +22,12 @@ class UserType extends AbstractType
     {
         $builder
             ->add('identifier', TextType::class, [
-                'constraints' => new NotBlank(),
-            ])
-            ->add('rawPassword', RepeatedPasswordType::class, [
-                'first_options' => [
-                    'constraints' => new NotBlank(groups: ['NotBlank']),
-                ],
-                'second_options' => [
-                    'constraints' => new NotBlank(groups: ['NotBlank']),
+                'constraints' => [
+                    new NotBlank(),
+                    new Length(min: 4),
                 ],
             ])
+            ->add('rawPassword', RepeatedPasswordType::class)
         ;
     }
 
@@ -56,7 +53,7 @@ class UserType extends AbstractType
 
                 return $data instanceof ResourceInterface && $data->getId()
                     ? ['Default']
-                    : ['Default', 'NotBlank'];
+                    : ['Default', 'PasswordRequired'];
             },
         ]);
     }

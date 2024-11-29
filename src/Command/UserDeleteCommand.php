@@ -8,8 +8,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use Siganushka\UserBundle\Repository\UserRepository;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
@@ -25,21 +25,23 @@ class UserDeleteCommand extends Command
     protected function configure(): void
     {
         $this
-            ->addOption('identifier', null, InputOption::VALUE_REQUIRED, 'The user unique identifier.')
+            ->addArgument('identifier', InputArgument::REQUIRED, 'User unique identifier to be delete.')
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        /** @var string|null */
-        $identifier = $input->getOption('identifier');
-        if (!$identifier) {
-            throw new \InvalidArgumentException('The option --identifier cannot be empty.');
-        }
+        /** @var string */
+        $identifier = $input->getArgument('identifier');
 
         $entity = $this->repository->findOneByIdentifier($identifier);
         if (!$entity) {
-            throw new \InvalidArgumentException(\sprintf('The user "%s" not found.', $identifier));
+            throw new \InvalidArgumentException(\sprintf('[identifier] This value "%s" for user not found.', $identifier));
+        }
+
+        $io = new SymfonyStyle($input, $output);
+        if (!$io->confirm(\sprintf('Are you sure you want to completely delete user "%s"?', $identifier), false)) {
+            return Command::SUCCESS;
         }
 
         try {
@@ -49,7 +51,6 @@ class UserDeleteCommand extends Command
             throw new \RuntimeException(\sprintf('Unable to delete user "%s" (%s).', $identifier, $th->getMessage()));
         }
 
-        $io = new SymfonyStyle($input, $output);
         $io->success(\sprintf('The user "%s" has been deleted successfully!', $identifier));
 
         return Command::SUCCESS;
