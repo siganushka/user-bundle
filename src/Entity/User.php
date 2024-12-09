@@ -29,8 +29,6 @@ class User implements ResourceInterface, EnableInterface, TimestampableInterface
     #[ORM\Column]
     protected ?string $password = null;
 
-    protected ?string $rawPassword = null;
-
     public function getIdentifier(): ?string
     {
         return $this->identifier;
@@ -55,23 +53,6 @@ class User implements ResourceInterface, EnableInterface, TimestampableInterface
         return $this;
     }
 
-    public function getRawPassword(): ?string
-    {
-        return $this->rawPassword;
-    }
-
-    public function setRawPassword(?string $rawPassword): self
-    {
-        $this->rawPassword = $rawPassword;
-
-        // [important] Force triggering of Events::preUpdate
-        if ($rawPassword) {
-            $this->password = null;
-        }
-
-        return $this;
-    }
-
     public function getRoles(): array
     {
         return ['ROLE_USER'];
@@ -79,7 +60,6 @@ class User implements ResourceInterface, EnableInterface, TimestampableInterface
 
     public function eraseCredentials(): void
     {
-        $this->rawPassword = null;
     }
 
     public function getUserIdentifier(): string

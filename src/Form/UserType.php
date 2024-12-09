@@ -6,14 +6,13 @@ namespace Siganushka\UserBundle\Form;
 
 use Siganushka\Contracts\Doctrine\ResourceInterface;
 use Siganushka\UserBundle\Form\Type\RepeatedPasswordType;
+use Siganushka\UserBundle\Form\Type\UserIdentifierType;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 class UserType extends AbstractType
@@ -21,13 +20,12 @@ class UserType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('identifier', TextType::class, [
-                'constraints' => [
-                    new NotBlank(),
-                    new Length(min: 4, max: 32),
-                ],
+            ->add('identifier', UserIdentifierType::class, [
+                'constraints' => new NotBlank(),
             ])
-            ->add('rawPassword', RepeatedPasswordType::class)
+            ->add('rawPassword', RepeatedPasswordType::class, [
+                'constraints' => new NotBlank(groups: ['PasswordRequired']),
+            ])
         ;
     }
 
@@ -35,7 +33,6 @@ class UserType extends AbstractType
     {
         $data = $form->getData();
         if ($data instanceof ResourceInterface && $data->getId()) {
-            // Using dynamic name for RepeatedType
             $rawPassword = $form->get('rawPassword');
             $firstName = $rawPassword->getConfig()->getOption('first_name', 'first');
 

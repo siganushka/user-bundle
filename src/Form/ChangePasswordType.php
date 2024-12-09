@@ -8,8 +8,8 @@ use Siganushka\UserBundle\Form\Type\RepeatedPasswordType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class ChangePasswordType extends AbstractType
 {
@@ -22,12 +22,8 @@ class ChangePasswordType extends AbstractType
             ])
             ->add('rawPassword', RepeatedPasswordType::class, [
                 'label' => 'New Password',
+                'constraints' => new NotBlank(),
             ])
         ;
-    }
-
-    public function configureOptions(OptionsResolver $resolver): void
-    {
-        $resolver->setDefault('validation_groups', ['Default', 'PasswordRequired']);
     }
 }

@@ -46,7 +46,7 @@ class UserResetPasswordCommand extends Command
         $first = $second = $input->getArgument('password');
         $rawPassword = compact('first', 'second');
 
-        $form = $this->formFactory->create(ResetPasswordType::class, $entity);
+        $form = $this->formFactory->create(ResetPasswordType::class, $entity, ['csrf_protection' => false]);
         $form->submit(compact('rawPassword'));
 
         if (!$form->isValid()) {

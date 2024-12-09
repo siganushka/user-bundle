@@ -7,7 +7,7 @@ namespace Siganushka\UserBundle\Form;
 use Siganushka\UserBundle\Form\Type\RepeatedPasswordType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class ResetPasswordType extends AbstractType
 {
@@ -16,12 +16,8 @@ class ResetPasswordType extends AbstractType
         $builder
             ->add('rawPassword', RepeatedPasswordType::class, [
                 'label' => 'New Password',
+                'constraints' => new NotBlank(),
             ])
         ;
-    }
-
-    public function configureOptions(OptionsResolver $resolver): void
-    {
-        $resolver->setDefault('validation_groups', ['Default', 'PasswordRequired']);
     }
 }

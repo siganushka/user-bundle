@@ -36,14 +36,14 @@ class UserAddCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $identifier = $input->getArgument('identifier');
-        $password = $input->getArgument('password');
+        $first = $second = $input->getArgument('password');
 
         $data = compact('identifier');
-        $data['rawPassword'] = ['first' => $password, 'second' => $password];
+        $data['rawPassword'] = compact('first', 'second');
 
         $entity = $this->repository->createNew();
 
-        $form = $this->formFactory->create(UserType::class, $entity);
+        $form = $this->formFactory->create(UserType::class, $entity, ['csrf_protection' => false]);
         $form->submit($data);
 
         if (!$form->isValid()) {

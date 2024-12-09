@@ -9,7 +9,6 @@ use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\PasswordStrength;
 
 class RepeatedPasswordType extends AbstractType
@@ -23,19 +22,22 @@ class RepeatedPasswordType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        // @see https://symfony.com/doc/current/reference/constraints/PasswordStrength.html
-        $strength = new PasswordStrength(minScore: $this->passwordStrengthMinScore);
-        $constraints = new NotBlank(groups: ['PasswordRequired']);
-
         $resolver->setDefaults([
             'label' => 'Password',
             'type' => PasswordType::class,
-            'options' => compact('constraints'),
-            'constraints' => $strength,
+            'mapped' => false,
         ]);
 
-        $resolver->setNormalizer('first_options', fn (Options $options, array $value) => $value + ['label' => $options['label']]);
+        $resolver->setNormalizer('first_options', fn (Options $options, array $value) => $value + ['label' => $options['label'], 'hash_property_path' => 'password']);
         $resolver->setNormalizer('second_options', fn (Options $options, array $value) => $value + ['label' => \sprintf('Confirm %s', $options['first_options']['label'])]);
+
+        // @see https://symfony.com/doc/current/reference/constraints/PasswordStrength.html
+        $resolver->setNormalizer('constraints', function (Options $options, $constraints) {
+            $constraints = \is_object($constraints) ? [$constraints] : (array) $constraints;
+            $constraints[] = new PasswordStrength(minScore: $this->passwordStrengthMinScore);
+
+            return $constraints;
+        });
     }
 
     public function getParent(): string
