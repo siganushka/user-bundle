@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Siganushka\UserBundle\Form;
 
 use Siganushka\Contracts\Doctrine\ResourceInterface;
+use Siganushka\UserBundle\Entity\User;
 use Siganushka\UserBundle\Form\Type\RepeatedPasswordType;
 use Siganushka\UserBundle\Form\Type\UserIdentifierType;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -44,7 +45,7 @@ class UserType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'constraints' => new UniqueEntity(fields: 'identifier'),
+            'constraints' => new UniqueEntity(fields: 'identifier', entityClass: User::class),
             'validation_groups' => function (FormInterface $form) {
                 $data = $form->getData();
 

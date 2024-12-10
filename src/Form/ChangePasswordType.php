@@ -20,7 +20,7 @@ class ChangePasswordType extends AbstractType
                 'constraints' => new UserPassword(),
                 'mapped' => false,
             ])
-            ->add('rawPassword', RepeatedPasswordType::class, [
+            ->add('newPassword', RepeatedPasswordType::class, [
                 'label' => 'New Password',
                 'constraints' => new NotBlank(),
             ])
