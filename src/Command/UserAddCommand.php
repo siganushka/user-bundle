@@ -45,7 +45,7 @@ class UserAddCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $fields = array_keys(iterator_to_array($this->form));
+        $fields = array_keys($this->form->all());
         $data = array_intersect_key($input->getOptions(), array_flip($fields));
 
         $first = $second = $data['password'];
