@@ -14,7 +14,6 @@ class PhoneNumberIdentifierType extends AbstractType implements IdentifierTypeIn
 {
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefault('label', 'Phone Number');
         $resolver->setDefault('html5', true);
 
         $resolver->setNormalizer('constraints', function (Options $options, $constraints) {
