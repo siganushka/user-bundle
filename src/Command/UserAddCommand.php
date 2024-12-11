@@ -33,31 +33,28 @@ class UserAddCommand extends Command
 
     protected function configure(): void
     {
+        /**
+         * The form view has been sorted fields.
+         *
+         * @var string $key
+         */
         foreach ($this->form->createView() as $key => $_) {
-            /** @var string */
-            $name = 'rawPassword' === $key ? 'password' : $key;
-            $this->addOption($name, null, InputOption::VALUE_REQUIRED, \sprintf('The %s for user.', $key));
+            $this->addOption($key, null, InputOption::VALUE_REQUIRED, \sprintf('The %s for user.', $key));
         }
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $fields = [];
-        foreach ($this->form as $key => $_) {
-            $fields[] = 'rawPassword' === $key ? 'password' : $key;
-        }
-
+        $fields = array_keys(iterator_to_array($this->form));
         $data = array_intersect_key($input->getOptions(), array_flip($fields));
 
         $first = $second = $data['password'];
-        $data['rawPassword'] = compact('first', 'second');
-
-        unset($data['password']);
+        $data['password'] = compact('first', 'second');
 
         $this->form->submit($data);
         if (!$this->form->isValid()) {
-            /** @var string $key */
-            foreach ($this->form->createView() as $key => $_) {
+            // Show errors with sorted.
+            foreach ($data as $key => $_) {
                 $errors = $this->form->get($key)->getErrors(true, true);
                 if (!$errors->count()) {
                     continue;

@@ -24,7 +24,7 @@ class UserType extends AbstractType
             ->add('identifier', UserIdentifierType::class, [
                 'constraints' => new NotBlank(),
             ])
-            ->add('rawPassword', RepeatedPasswordType::class, [
+            ->add('password', RepeatedPasswordType::class, [
                 'constraints' => new NotBlank(groups: ['PasswordRequired']),
             ])
         ;
@@ -34,11 +34,11 @@ class UserType extends AbstractType
     {
         $data = $form->getData();
         if ($data instanceof ResourceInterface && $data->getId()) {
-            $rawPassword = $form->get('rawPassword');
-            $firstName = $rawPassword->getConfig()->getOption('first_name', 'first');
+            $password = $form->get('password');
+            $first = $password->getConfig()->getOption('first_name', 'first');
 
-            $view['rawPassword'][$firstName]->vars['help'] = 'Please do not fill in if you do not want to change the password!';
-            $view['rawPassword'][$firstName]->vars['help_attr'] = ['class' => 'text-warning'];
+            $view['password'][$first]->vars['help'] = 'Please do not fill in if you do not want to change the password!';
+            $view['password'][$first]->vars['help_attr'] = ['class' => 'text-warning'];
         }
     }
 

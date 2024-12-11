@@ -25,6 +25,7 @@ class RepeatedPasswordType extends AbstractType
         $resolver->setDefaults([
             'label' => 'Password',
             'type' => PasswordType::class,
+            'options' => ['always_empty' => false],
             'mapped' => false,
         ]);
 
