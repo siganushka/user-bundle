@@ -13,8 +13,8 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-#[AsCommand('siganushka:user:delete', 'Delete a User.')]
-class UserDeleteCommand extends Command
+#[AsCommand('siganushka:user:disable', 'Disable a User.')]
+class UserDisableCommand extends Command
 {
     use UserCommandTrait;
 
@@ -27,27 +27,29 @@ class UserDeleteCommand extends Command
     protected function configure(): void
     {
         $this
-            ->addArgument('identifier', InputArgument::REQUIRED, 'User unique identifier to be delete.')
+            ->addArgument('identifier', InputArgument::REQUIRED, 'User unique identifier to be disable.')
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $entity = $this->getUserByArgument($input);
-
         $io = new SymfonyStyle($input, $output);
-        if (!$io->confirm(\sprintf('Are you sure you want to completely delete user "%s"?', $entity->getUserIdentifier()), false)) {
+
+        $entity = $this->getUserByArgument($input);
+        if (!$entity->isEnabled()) {
+            $io->warning(\sprintf('User "%s" has already been disabled (Nothing was done)!', $entity->getUserIdentifier()));
+
             return Command::SUCCESS;
         }
 
-        try {
-            $this->entityManager->remove($entity);
-            $this->entityManager->flush();
-        } catch (\Throwable $th) {
-            throw new \RuntimeException(\sprintf('Unable to delete user "%s" (%s).', $entity->getUserIdentifier(), $th->getMessage()));
+        if (!$io->confirm(\sprintf('Are you sure you want to disable user "%s"?', $entity->getUserIdentifier()), false)) {
+            return Command::SUCCESS;
         }
 
-        $io->success(\sprintf('The user "%s" has been deleted successfully!', $entity->getUserIdentifier()));
+        $entity->setEnabled(false);
+        $this->entityManager->flush();
+
+        $io->success(\sprintf('User "%s" has been disabled!', $entity->getUserIdentifier()));
 
         return Command::SUCCESS;
     }

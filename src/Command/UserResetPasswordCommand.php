@@ -15,9 +15,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Form\FormFactoryInterface;
 
-#[AsCommand('siganushka:user:reset-password', 'Resetting a user password.')]
+#[AsCommand('siganushka:user:reset-password', 'Resetting user password.')]
 class UserResetPasswordCommand extends Command
 {
+    use UserCommandTrait;
+
     public function __construct(private readonly EntityManagerInterface $entityManager,
         private readonly FormFactoryInterface $formFactory,
         private readonly UserRepository $repository)
@@ -35,13 +37,7 @@ class UserResetPasswordCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        /** @var string */
-        $identifier = $input->getArgument('identifier');
-
-        $entity = $this->repository->findOneByIdentifier($identifier);
-        if (!$entity) {
-            throw new \InvalidArgumentException(\sprintf('[identifier] This value "%s" for user not found.', $identifier));
-        }
+        $entity = $this->getUserByArgument($input);
 
         $first = $second = $input->getArgument('password');
         $newPassword = compact('first', 'second');
@@ -61,13 +57,13 @@ class UserResetPasswordCommand extends Command
         }
 
         $io = new SymfonyStyle($input, $output);
-        if (!$io->confirm(\sprintf('Are you sure you want to reset password for user "%s"?', $identifier), false)) {
+        if (!$io->confirm(\sprintf('Are you sure you want to reset password for user "%s"?', $entity->getUserIdentifier()), false)) {
             return Command::SUCCESS;
         }
 
         $this->entityManager->flush();
 
-        $io->success(\sprintf('The user "%s" password has been reset successfully!', $entity->getIdentifier()));
+        $io->success(\sprintf('User "%s" password has been reset successfully!', $entity->getUserIdentifier()));
 
         return Command::SUCCESS;
     }

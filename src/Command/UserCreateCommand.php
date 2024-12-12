@@ -17,8 +17,8 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 
-#[AsCommand('siganushka:user:add', 'Add a new User.')]
-class UserAddCommand extends Command
+#[AsCommand('siganushka:user:create', 'Create a new User.')]
+class UserCreateCommand extends Command
 {
     private readonly User $entity;
     private readonly FormInterface $form;
@@ -75,7 +75,7 @@ class UserAddCommand extends Command
         $this->entityManager->flush();
 
         $io = new SymfonyStyle($input, $output);
-        $io->success(\sprintf('The user "%s" has been added successfully!', $this->entity->getIdentifier()));
+        $io->success(\sprintf('The user "%s" has been created successfully!', $this->entity->getIdentifier()));
 
         return Command::SUCCESS;
     }
