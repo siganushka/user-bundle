@@ -8,10 +8,15 @@ use Siganushka\GenericBundle\Repository\GenericEntityRepository;
 use Siganushka\UserBundle\Entity\User;
 
 /**
- * @extends GenericEntityRepository<User>
+ * @template T of User = User
+ *
+ * @extends GenericEntityRepository<T>
  */
 class UserRepository extends GenericEntityRepository
 {
+    /**
+     * @return T|null
+     */
     public function findOneByIdentifier(string $identifier): ?User
     {
         return $this->findOneBy(compact('identifier'));
