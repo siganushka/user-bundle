@@ -14,7 +14,7 @@ class EnabledUserChecker implements UserCheckerInterface
     public function checkPreAuth(UserInterface $user): void
     {
         if ($user instanceof EnableInterface && !$user->isEnabled()) {
-            throw new CustomUserMessageAccountStatusException('Your account has been disabled.');
+            throw new CustomUserMessageAccountStatusException('Account is disabled.');
         }
     }
 
