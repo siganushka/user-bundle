@@ -8,7 +8,6 @@ use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
-use Siganushka\GenericBundle\Exception\FormErrorException;
 use Siganushka\UserBundle\Entity\User;
 use Siganushka\UserBundle\Form\UserType;
 use Siganushka\UserBundle\Repository\UserRepository;
@@ -46,7 +45,7 @@ class UserController extends AbstractController
         $form->submit($request->request->all());
 
         if (!$form->isValid()) {
-            throw new FormErrorException($form);
+            return $this->json($form, Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $entityManager->persist($entity);
@@ -78,7 +77,7 @@ class UserController extends AbstractController
         $form->submit($request->request->all(), !$request->isMethod('PATCH'));
 
         if (!$form->isValid()) {
-            throw new FormErrorException($form);
+            return $this->json($form, Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $entityManager->flush();

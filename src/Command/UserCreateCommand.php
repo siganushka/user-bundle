@@ -48,8 +48,11 @@ class UserCreateCommand extends Command
         $fields = array_keys($this->form->all());
         $data = array_intersect_key($input->getOptions(), array_flip($fields));
 
-        $first = $second = $data['password'];
-        $data['password'] = compact('first', 'second');
+        // Form fields can be added/removed via extensions.
+        if (\array_key_exists('password', $data)) {
+            $first = $second = $data['password'];
+            $data['password'] = compact('first', 'second');
+        }
 
         $this->form->submit($data);
         if (!$this->form->isValid()) {
