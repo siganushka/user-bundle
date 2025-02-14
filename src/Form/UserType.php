@@ -33,7 +33,8 @@ class UserType extends AbstractType
     public function finishView(FormView $view, FormInterface $form, array $options): void
     {
         $data = $form->getData();
-        if ($data instanceof ResourceInterface && $data->getId()) {
+        if ($form->has('password') && $data instanceof ResourceInterface && $data->getId()) {
+            // Form fields can be added/removed via extensions.
             $password = $form->get('password');
             $first = $password->getConfig()->getOption('first_name', 'first');
 
