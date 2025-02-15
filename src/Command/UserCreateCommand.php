@@ -7,7 +7,6 @@ namespace Siganushka\UserBundle\Command;
 use Doctrine\ORM\EntityManagerInterface;
 use Siganushka\UserBundle\Entity\User;
 use Siganushka\UserBundle\Form\UserType;
-use Siganushka\UserBundle\Repository\UserRepository;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -20,32 +19,32 @@ use Symfony\Component\Form\FormInterface;
 #[AsCommand('siganushka:user:create', 'Create a new User.')]
 class UserCreateCommand extends Command
 {
-    private readonly User $entity;
-    private readonly FormInterface $form;
+    private FormInterface $form;
 
-    public function __construct(private readonly EntityManagerInterface $entityManager, FormFactoryInterface $formFactory, UserRepository $repository)
+    public function __construct(
+        private readonly EntityManagerInterface $entityManager,
+        private readonly FormFactoryInterface $formFactory)
     {
-        $this->entity = $repository->createNew();
-        $this->form = $formFactory->create(UserType::class, $this->entity, ['csrf_protection' => false]);
-
         parent::__construct();
     }
 
     protected function configure(): void
     {
         /**
-         * The form view has been sorted fields.
+         * Using form view to get the sorted form fields.
          *
-         * @var string $key
+         * @var string $name
          */
-        foreach ($this->form->createView() as $key => $_) {
-            $this->addOption($key, null, InputOption::VALUE_REQUIRED, \sprintf('The %s for user.', $key));
+        foreach ($this->createForm()->createView() as $name => $_) {
+            $this->addOption($name, null, InputOption::VALUE_REQUIRED, \sprintf('The %s to create user.', $name));
         }
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $fields = array_keys($this->form->all());
+        $form = $this->createForm();
+
+        $fields = array_keys($form->all());
         $data = array_intersect_key($input->getOptions(), array_flip($fields));
 
         // Form fields can be added/removed via extensions.
@@ -54,32 +53,41 @@ class UserCreateCommand extends Command
             $data['password'] = compact('first', 'second');
         }
 
-        $this->form->submit($data);
-        if (!$this->form->isValid()) {
-            // Show errors with sorted.
-            foreach ($data as $key => $_) {
-                $errors = $this->form->get($key)->getErrors(true, true);
+        $form->submit($data);
+        if (!$form->isValid()) {
+            // $data is sorted form fields
+            foreach ($data as $name => $_) {
+                $errors = $form->get($name)->getErrors(true);
                 if (!$errors->count()) {
                     continue;
                 }
 
-                $error = $errors->current();
-
-                $field = $error->getOrigin()?->getName() ?? $this->form->getName();
-                if (\in_array($field, ['first', 'second'])) {
-                    $field = 'password';
+                if (\in_array($name, ['first', 'second'])) {
+                    $name = 'password';
                 }
 
-                throw new \InvalidArgumentException(\sprintf('[%s] %s', $field, $error->getMessage()));
+                throw new \InvalidArgumentException(\sprintf('[%s] %s', $name, $errors->current()->getMessage()));
             }
         }
 
-        $this->entityManager->persist($this->entity);
+        /** @var User */
+        $user = $this->form->getData();
+
+        $this->entityManager->persist($user);
         $this->entityManager->flush();
 
         $io = new SymfonyStyle($input, $output);
-        $io->success(\sprintf('The user "%s" has been created successfully!', $this->entity->getIdentifier()));
+        $io->success(\sprintf('The user "%s" has been created successfully!', $user->getIdentifier()));
 
         return Command::SUCCESS;
+    }
+
+    private function createForm(): FormInterface
+    {
+        if (isset($this->form)) {
+            return $this->form;
+        }
+
+        return $this->form = $this->formFactory->create(UserType::class);
     }
 }
