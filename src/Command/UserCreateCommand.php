@@ -88,6 +88,6 @@ class UserCreateCommand extends Command
             return $this->form;
         }
 
-        return $this->form = $this->formFactory->create(UserType::class);
+        return $this->form = $this->formFactory->create(UserType::class, null, ['csrf_protection' => false]);
     }
 }
