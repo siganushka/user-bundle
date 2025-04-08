@@ -38,7 +38,7 @@ class UserType extends AbstractType
             $password = $form->get('password');
             $first = $password->getConfig()->getOption('first_name', 'first');
 
-            $view['password'][$first]->vars['help'] = 'Please do not fill in if you do not want to change the password!';
+            $view['password'][$first]->vars['help'] = 'Please do not fill in if you do not want to change the password.';
             $view['password'][$first]->vars['help_attr'] = ['class' => 'text-warning'];
         }
     }
@@ -46,7 +46,7 @@ class UserType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'constraints' => new UniqueEntity(fields: 'identifier', entityClass: User::class),
+            'constraints' => new UniqueEntity('identifier', entityClass: User::class),
             'validation_groups' => function (FormInterface $form) {
                 $data = $form->getData();
 

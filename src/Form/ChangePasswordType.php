@@ -17,6 +17,7 @@ class ChangePasswordType extends AbstractType
     {
         $builder
             ->add('currentPassword', PasswordType::class, [
+                'translation_domain' => 'SiganushkaUserBundle',
                 'constraints' => new UserPassword(),
                 'mapped' => false,
             ])

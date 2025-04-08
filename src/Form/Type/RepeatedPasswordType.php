@@ -26,6 +26,7 @@ class RepeatedPasswordType extends AbstractType
             'label' => 'Password',
             'type' => PasswordType::class,
             'options' => ['always_empty' => false],
+            'translation_domain' => 'SiganushkaUserBundle',
             'mapped' => false,
         ]);
 
