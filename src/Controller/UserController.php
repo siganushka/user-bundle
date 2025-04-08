@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Siganushka\UserBundle\Controller;
 
-use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
@@ -14,7 +13,6 @@ use Siganushka\UserBundle\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 class UserController extends AbstractController
@@ -26,7 +24,7 @@ class UserController extends AbstractController
     #[Route('/users', methods: 'GET')]
     public function getCollection(Request $request, PaginatorInterface $paginator): Response
     {
-        $queryBuilder = $this->repository->createQueryBuilder('u');
+        $queryBuilder = $this->repository->createQueryBuilderWithOrdered('u');
 
         $page = $request->query->getInt('page', 1);
         $size = $request->query->getInt('size', 10);
@@ -57,10 +55,8 @@ class UserController extends AbstractController
     #[Route('/users/{id<\d+>}', methods: 'GET')]
     public function getItem(int $id): Response
     {
-        $entity = $this->repository->find($id);
-        if (!$entity) {
-            throw $this->createNotFoundException(\sprintf('Resource #%d not found.', $id));
-        }
+        $entity = $this->repository->find($id)
+            ?? throw $this->createNotFoundException();
 
         return $this->createResponse($entity);
     }
@@ -68,10 +64,8 @@ class UserController extends AbstractController
     #[Route('/users/{id<\d+>}', methods: ['PUT', 'PATCH'])]
     public function putItem(Request $request, EntityManagerInterface $entityManager, int $id): Response
     {
-        $entity = $this->repository->find($id);
-        if (!$entity) {
-            throw $this->createNotFoundException(\sprintf('Resource #%d not found.', $id));
-        }
+        $entity = $this->repository->find($id)
+            ?? throw $this->createNotFoundException();
 
         $form = $this->createForm(UserType::class, $entity);
         $form->submit($request->request->all(), !$request->isMethod('PATCH'));
@@ -88,17 +82,11 @@ class UserController extends AbstractController
     #[Route('/users/{id<\d+>}', methods: 'DELETE')]
     public function deleteItem(EntityManagerInterface $entityManager, int $id): Response
     {
-        $entity = $this->repository->find($id);
-        if (!$entity) {
-            throw $this->createNotFoundException(\sprintf('Resource #%d not found.', $id));
-        }
+        $entity = $this->repository->find($id)
+            ?? throw $this->createNotFoundException();
 
-        try {
-            $entityManager->remove($entity);
-            $entityManager->flush();
-        } catch (ForeignKeyConstraintViolationException) {
-            throw new BadRequestHttpException('Unable to delete resource.');
-        }
+        $entityManager->remove($entity);
+        $entityManager->flush();
 
         // 204 No Content
         return $this->createResponse(null, Response::HTTP_NO_CONTENT);

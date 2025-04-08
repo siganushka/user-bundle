@@ -29,6 +29,7 @@ class RepeatedPasswordType extends AbstractType
             'mapped' => false,
         ]);
 
+        // The options "hash_property_path" is defined in symfony/security-bundle
         $resolver->setNormalizer('first_options', fn (Options $options, array $value) => $value + ['label' => $options['label'], 'hash_property_path' => 'password']);
         $resolver->setNormalizer('second_options', fn (Options $options, array $value) => $value + ['label' => \sprintf('Confirm %s', $options['first_options']['label'])]);
 
