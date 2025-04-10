@@ -22,6 +22,7 @@ class UserType extends AbstractType
     {
         $builder
             ->add('identifier', UserIdentifierType::class, [
+                'translation_domain' => 'SiganushkaUserBundle',
                 'constraints' => new NotBlank(),
             ])
             ->add('password', RepeatedPasswordType::class, [
