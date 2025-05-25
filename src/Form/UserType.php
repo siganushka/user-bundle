@@ -10,6 +10,7 @@ use Siganushka\UserBundle\Form\Type\RepeatedPasswordType;
 use Siganushka\UserBundle\Form\Type\UserIdentifierType;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
@@ -26,6 +27,9 @@ class UserType extends AbstractType
             ])
             ->add('password', RepeatedPasswordType::class, [
                 'constraints' => new NotBlank(groups: ['PasswordRequired']),
+            ])
+            ->add('enabled', CheckboxType::class, [
+                'label' => 'generic.enabled',
             ])
         ;
     }
