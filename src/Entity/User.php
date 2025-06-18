@@ -58,6 +58,7 @@ class User implements ResourceInterface, EnableInterface, TimestampableInterface
         return ['ROLE_USER'];
     }
 
+    #[\Deprecated]
     public function eraseCredentials(): void
     {
     }
