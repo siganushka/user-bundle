@@ -9,12 +9,13 @@ use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\PasswordStrength;
 
 class RepeatedPasswordType extends AbstractType
 {
     /**
-     * @param PasswordStrength::STRENGTH_*|null $passwordStrengthMinScore
+     * @param PasswordStrength::STRENGTH_*|-1|null $passwordStrengthMinScore
      */
     public function __construct(private readonly ?int $passwordStrengthMinScore = null)
     {
@@ -37,7 +38,9 @@ class RepeatedPasswordType extends AbstractType
         // @see https://symfony.com/doc/current/reference/constraints/PasswordStrength.html
         $resolver->setNormalizer('constraints', function (Options $options, $constraints) {
             $constraints = \is_object($constraints) ? [$constraints] : (array) $constraints;
-            $constraints[] = new PasswordStrength(minScore: $this->passwordStrengthMinScore);
+            $constraints[] = $this->passwordStrengthMinScore && $this->passwordStrengthMinScore > -1
+                ? new PasswordStrength(minScore: $this->passwordStrengthMinScore)
+                : new Length(min: 6, max: 32);
 
             return $constraints;
         });

@@ -48,6 +48,7 @@ class Configuration implements ConfigurationInterface
             ->end()
             ->enumNode('password_strength_min_score')
                 ->values([
+                    -1,
                     PasswordStrength::STRENGTH_WEAK,
                     PasswordStrength::STRENGTH_MEDIUM,
                     PasswordStrength::STRENGTH_STRONG,
