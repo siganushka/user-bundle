@@ -15,6 +15,8 @@ class PhoneNumberIdentifierType extends AbstractType implements IdentifierTypeIn
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefault('html5', true);
+        // @see https://symfony.com/doc/current/reference/forms/types/number.html#input
+        $resolver->setDefault('input', 'string');
 
         $resolver->setNormalizer('constraints', function (Options $options, $constraints) {
             $constraints = \is_object($constraints) ? [$constraints] : (array) $constraints;
