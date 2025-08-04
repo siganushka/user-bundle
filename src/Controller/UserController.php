@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace Siganushka\UserBundle\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
-use Siganushka\UserBundle\Entity\User;
 use Siganushka\UserBundle\Form\UserType;
 use Siganushka\UserBundle\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -88,14 +86,10 @@ class UserController extends AbstractController
         $entityManager->remove($entity);
         $entityManager->flush();
 
-        // 204 No Content
-        return $this->createResponse(null, Response::HTTP_NO_CONTENT);
+        return $this->createResponse(null);
     }
 
-    /**
-     * @param PaginationInterface<int, mixed>|User|null $data
-     */
-    protected function createResponse(PaginationInterface|User|null $data, int $statusCode = Response::HTTP_OK, array $headers = []): Response
+    protected function createResponse(mixed $data, int $statusCode = Response::HTTP_OK, array $headers = []): Response
     {
         $attributes = ['id', 'identifier', 'enabled', 'updatedAt', 'createdAt'];
 
