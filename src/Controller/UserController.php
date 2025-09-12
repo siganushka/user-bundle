@@ -27,7 +27,9 @@ class UserController extends AbstractController
         $queryBuilder = $this->repository->createQueryBuilderWithOrdered('u');
         $pagination = $paginator->paginate($queryBuilder, $dto->page, $dto->size);
 
-        return $this->createResponse($pagination);
+        return $this->json($pagination, context: [
+            'groups' => ['user:collection'],
+        ]);
     }
 
     #[Route('/users', methods: 'POST')]
@@ -45,7 +47,9 @@ class UserController extends AbstractController
         $entityManager->persist($entity);
         $entityManager->flush();
 
-        return $this->createResponse($entity);
+        return $this->json($entity, Response::HTTP_CREATED, context: [
+            'groups' => ['user:item'],
+        ]);
     }
 
     #[Route('/users/{id<\d+>}', methods: 'GET')]
@@ -54,7 +58,9 @@ class UserController extends AbstractController
         $entity = $this->repository->find($id)
             ?? throw $this->createNotFoundException();
 
-        return $this->createResponse($entity);
+        return $this->json($entity, context: [
+            'groups' => ['user:item'],
+        ]);
     }
 
     #[Route('/users/{id<\d+>}', methods: ['PUT', 'PATCH'])]
@@ -72,7 +78,9 @@ class UserController extends AbstractController
 
         $entityManager->flush();
 
-        return $this->createResponse($entity);
+        return $this->json($entity, context: [
+            'groups' => ['user:item'],
+        ]);
     }
 
     #[Route('/users/{id<\d+>}', methods: 'DELETE')]
@@ -86,12 +94,5 @@ class UserController extends AbstractController
 
         // 204 No Content
         return new Response(status: Response::HTTP_NO_CONTENT);
-    }
-
-    protected function createResponse(mixed $data, int $statusCode = Response::HTTP_OK, array $headers = []): Response
-    {
-        $attributes = ['id', 'identifier', 'enabled', 'updatedAt', 'createdAt'];
-
-        return $this->json($data, $statusCode, $headers, compact('attributes'));
     }
 }
