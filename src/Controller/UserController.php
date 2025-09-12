@@ -6,11 +6,13 @@ namespace Siganushka\UserBundle\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
+use Siganushka\GenericBundle\Dto\PaginationDto;
 use Siganushka\UserBundle\Form\UserType;
 use Siganushka\UserBundle\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\MapQueryString;
 use Symfony\Component\Routing\Attribute\Route;
 
 class UserController extends AbstractController
@@ -20,14 +22,10 @@ class UserController extends AbstractController
     }
 
     #[Route('/users', methods: 'GET')]
-    public function getCollection(Request $request, PaginatorInterface $paginator): Response
+    public function getCollection(PaginatorInterface $paginator, #[MapQueryString] PaginationDto $dto): Response
     {
         $queryBuilder = $this->repository->createQueryBuilderWithOrdered('u');
-
-        $page = $request->query->getInt('page', 1);
-        $size = $request->query->getInt('size', 10);
-
-        $pagination = $paginator->paginate($queryBuilder, $page, $size);
+        $pagination = $paginator->paginate($queryBuilder, $dto->page, $dto->size);
 
         return $this->createResponse($pagination);
     }
