@@ -24,7 +24,7 @@ class UserController extends AbstractController
     #[Route('/users', methods: 'GET')]
     public function getCollection(PaginatorInterface $paginator, #[MapQueryString] PaginationDto $dto): Response
     {
-        $queryBuilder = $this->repository->createQueryBuilderWithOrdered('u');
+        $queryBuilder = $this->repository->createQueryBuilderWithOrderBy('u');
         $pagination = $paginator->paginate($queryBuilder, $dto->page, $dto->size);
 
         return $this->json($pagination, context: [
