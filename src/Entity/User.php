@@ -65,6 +65,8 @@ class User implements ResourceInterface, EnableInterface, TimestampableInterface
 
     public function getUserIdentifier(): string
     {
-        return $this->identifier ?? spl_object_hash($this);
+        \assert(!empty($this->identifier));
+
+        return $this->identifier;
     }
 }

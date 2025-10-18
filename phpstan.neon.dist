@@ -10,4 +10,3 @@ parameters:
     ignoreErrors:
         - '#no value type specified in iterable type array#'
         - '#no value type specified in iterable type iterable#'
-        - '#getUserIdentifier\(\) should return non-empty-string but returns string#'
