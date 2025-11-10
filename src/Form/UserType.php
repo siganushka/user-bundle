@@ -35,6 +35,7 @@ class UserType extends AbstractType
             ])
             ->add('enabled', CheckboxType::class, [
                 'label' => 'generic.enabled',
+                'required' => false,
             ])
         ;
     }
