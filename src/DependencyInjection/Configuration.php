@@ -8,7 +8,6 @@ use Siganushka\UserBundle\Entity\User;
 use Siganushka\UserBundle\Identifier\IdentifierType;
 use Siganushka\UserBundle\Identifier\IdentifierTypeInterface;
 use Siganushka\UserBundle\Repository\UserRepository;
-use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Validator\Constraints\PasswordStrength;
@@ -19,10 +18,12 @@ class Configuration implements ConfigurationInterface
         'user_class' => [User::class, UserRepository::class],
     ];
 
+    /**
+     * @return TreeBuilder<'array'>
+     */
     public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder('siganushka_user');
-        /** @var ArrayNodeDefinition */
         $rootNode = $treeBuilder->getRootNode();
 
         foreach (static::$resourceMapping as $configName => [$entityClass]) {

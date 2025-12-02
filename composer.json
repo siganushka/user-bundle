@@ -12,15 +12,15 @@
         }
     ],
     "require": {
-        "php": ">=8.1",
-        "knplabs/knp-components": "^4.4|^5.0",
+        "php": ">=8.2",
+        "knplabs/knp-components": "^5.0",
         "siganushka/doctrine-contracts": "dev-main",
         "siganushka/generic-bundle": "dev-main",
-        "symfony/doctrine-bridge": "^6.4|^7.0|^8.0",
-        "symfony/form": "^6.4|^7.0|^8.0",
-        "symfony/framework-bundle": "^6.4|^7.0|^8.0",
-        "symfony/security-core": "^6.4|^7.0|^8.0",
-        "symfony/validator": "^6.4|^7.0|^8.0"
+        "symfony/doctrine-bridge": "^7.4|^8.0",
+        "symfony/form": "^7.4|^8.0",
+        "symfony/framework-bundle": "^7.4|^8.0",
+        "symfony/security-core": "^7.4|^8.0",
+        "symfony/validator": "^7.4|^8.0"
     },
     "autoload": {
         "psr-4": {
@@ -37,9 +37,9 @@
     },
     "scripts": {
         "tools:run": [
-            "tools/vendor/bin/php-cs-fixer fix",
-            "tools/vendor/bin/simple-phpunit --debug",
-            "tools/vendor/bin/phpstan"
+            "tools/vendor/bin/php-cs-fixer fix -vvv",
+            "tools/vendor/bin/simple-phpunit -vvv",
+            "tools/vendor/bin/phpstan analyse -vvv"
         ]
     }
 }
