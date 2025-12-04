@@ -34,7 +34,7 @@ class UserType extends AbstractType
                 'constraints' => new NotBlank(groups: ['PasswordRequired']),
             ])
             ->add('enabled', CheckboxType::class, [
-                'label' => 'generic.enabled',
+                'label' => 'generic.enable',
                 'required' => false,
             ])
         ;
