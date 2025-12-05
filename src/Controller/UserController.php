@@ -13,7 +13,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryString;
-use Symfony\Component\Routing\Attribute\Route;
 
 class UserController extends AbstractController
 {
@@ -21,7 +20,6 @@ class UserController extends AbstractController
     {
     }
 
-    #[Route('/users', methods: 'GET')]
     public function getCollection(PaginatorInterface $paginator, #[MapQueryString] PageQueryDto $dto): Response
     {
         $queryBuilder = $this->repository->createQueryBuilderWithOrderBy('u');
@@ -32,7 +30,6 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/users', methods: 'POST')]
     public function postCollection(Request $request, EntityManagerInterface $entityManager): Response
     {
         $entity = $this->repository->createNew();
@@ -52,7 +49,6 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/users/{id<\d+>}', methods: 'GET')]
     public function getItem(int $id): Response
     {
         $entity = $this->repository->find($id)
@@ -63,7 +59,6 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/users/{id<\d+>}', methods: ['PUT', 'PATCH'])]
     public function putItem(Request $request, EntityManagerInterface $entityManager, int $id): Response
     {
         $entity = $this->repository->find($id)
@@ -83,7 +78,6 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/users/{id<\d+>}', methods: 'DELETE')]
     public function deleteItem(EntityManagerInterface $entityManager, int $id): Response
     {
         $entity = $this->repository->find($id)
