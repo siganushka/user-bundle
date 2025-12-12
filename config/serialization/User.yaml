@@ -1,6 +1,0 @@
-Siganushka\UserBundle\Entity\User:
-    attributes:
-        password:
-            ignore: true
-        userIdentifier:
-            ignore: true
