@@ -35,7 +35,7 @@ class UserController extends AbstractController
         $entity = $this->repository->createNew();
 
         $form = $this->createForm(UserType::class, $entity);
-        $form->submit($request->request->all());
+        $form->submit($request->getPayload()->all());
 
         if (!$form->isValid()) {
             return $this->json($form, Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -65,7 +65,7 @@ class UserController extends AbstractController
             ?? throw $this->createNotFoundException();
 
         $form = $this->createForm(UserType::class, $entity);
-        $form->submit($request->request->all(), !$request->isMethod('PATCH'));
+        $form->submit($request->getPayload()->all(), !$request->isMethod('PATCH'));
 
         if (!$form->isValid()) {
             return $this->json($form, Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -86,7 +86,6 @@ class UserController extends AbstractController
         $entityManager->remove($entity);
         $entityManager->flush();
 
-        // 204 No Content
         return new Response(status: Response::HTTP_NO_CONTENT);
     }
 }
