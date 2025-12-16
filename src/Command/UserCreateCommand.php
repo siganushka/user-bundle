@@ -23,8 +23,8 @@ class UserCreateCommand extends Command
 
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
-        private readonly FormFactoryInterface $formFactory)
-    {
+        private readonly FormFactoryInterface $formFactory,
+    ) {
         parent::__construct();
     }
 

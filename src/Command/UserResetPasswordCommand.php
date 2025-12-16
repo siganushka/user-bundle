@@ -20,10 +20,11 @@ class UserResetPasswordCommand extends Command
 {
     use UserCommandTrait;
 
-    public function __construct(private readonly EntityManagerInterface $entityManager,
+    public function __construct(
+        private readonly EntityManagerInterface $entityManager,
         private readonly FormFactoryInterface $formFactory,
-        private readonly UserRepository $repository)
-    {
+        private readonly UserRepository $repository,
+    ) {
         parent::__construct();
     }
 

@@ -18,9 +18,10 @@ class UserDeleteCommand extends Command
 {
     use UserCommandTrait;
 
-    public function __construct(private readonly EntityManagerInterface $entityManager,
-        private readonly UserRepository $repository)
-    {
+    public function __construct(
+        private readonly EntityManagerInterface $entityManager,
+        private readonly UserRepository $repository,
+    ) {
         parent::__construct();
     }
 
