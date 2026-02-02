@@ -58,7 +58,7 @@ class UserType extends AbstractType
         $resolver->setDefaults([
             'data_class' => $this->repository->getClassName(),
             'constraints' => new UniqueEntity('identifier', entityClass: User::class),
-            'validation_groups' => function (FormInterface $form) {
+            'validation_groups' => static function (FormInterface $form) {
                 $data = $form->getData();
 
                 return $data instanceof ResourceInterface && $data->getId()

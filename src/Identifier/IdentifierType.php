@@ -14,7 +14,7 @@ class IdentifierType extends AbstractType implements IdentifierTypeInterface
 {
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setNormalizer('constraints', function (Options $options, $constraints) {
+        $resolver->setNormalizer('constraints', static function (Options $options, $constraints) {
             $constraints = \is_object($constraints) ? [$constraints] : (array) $constraints;
             $constraints[] = new Length(min: 4, max: 32);
 

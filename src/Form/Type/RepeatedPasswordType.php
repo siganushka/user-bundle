@@ -32,8 +32,8 @@ class RepeatedPasswordType extends AbstractType
         ]);
 
         // The options "hash_property_path" is defined in symfony/security-bundle
-        $resolver->setNormalizer('first_options', fn (Options $options, array $value) => $value + ['label' => $options['label'], 'hash_property_path' => 'password']);
-        $resolver->setNormalizer('second_options', fn (Options $options, array $value) => $value + ['label' => \sprintf('Confirm %s', $options['first_options']['label'])]);
+        $resolver->setNormalizer('first_options', static fn (Options $options, array $value) => $value + ['label' => $options['label'], 'hash_property_path' => 'password']);
+        $resolver->setNormalizer('second_options', static fn (Options $options, array $value) => $value + ['label' => \sprintf('Confirm %s', $options['first_options']['label'])]);
 
         // @see https://symfony.com/doc/current/reference/constraints/PasswordStrength.html
         $resolver->setNormalizer('constraints', function (Options $options, $constraints) {

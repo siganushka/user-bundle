@@ -15,7 +15,7 @@ class EmailIdentifierType extends AbstractType implements IdentifierTypeInterfac
 {
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setNormalizer('constraints', function (Options $options, $constraints) {
+        $resolver->setNormalizer('constraints', static function (Options $options, $constraints) {
             $constraints = \is_object($constraints) ? [$constraints] : (array) $constraints;
             $constraints[] = new Length(max: 64);
             $constraints[] = new Email();
