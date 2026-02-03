@@ -17,6 +17,7 @@ class UserIdentifierType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
+            'label' => 'Identifier',
             'translation_domain' => 'SiganushkaUserBundle',
         ]);
     }
