@@ -4,26 +4,28 @@ declare(strict_types=1);
 
 namespace Siganushka\UserBundle\EventListener;
 
-use Psr\Log\LoggerInterface;
+use Doctrine\ORM\EntityManagerInterface;
+use Siganushka\UserBundle\Entity\User;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
-use Symfony\Component\Security\Http\Event\LoginSuccessEvent;
 
+#[AsEventListener]
 class LoginListener
 {
-    public function __construct(private readonly LoggerInterface $logger)
+    public function __construct(private readonly EntityManagerInterface $entityManager)
     {
     }
 
-    #[AsEventListener]
-    public function onLoginSuccess(LoginSuccessEvent $event): void
+    public function __invoke(InteractiveLoginEvent $event): void
     {
-        $this->logger->debug(__METHOD__);
-    }
+        $user = $event->getAuthenticationToken()->getUser();
+        if (!$user instanceof User) {
+            return;
+        }
 
-    #[AsEventListener]
-    public function onInteractiveLogin(InteractiveLoginEvent $event): void
-    {
-        $this->logger->debug(__METHOD__);
+        $user->setLastLoginIp($event->getRequest()->getClientIp());
+        $user->setLastLoginAt(new \DateTimeImmutable());
+
+        $this->entityManager->flush();
     }
 }
