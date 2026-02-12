@@ -30,10 +30,10 @@ class User implements ResourceInterface, EnableInterface, TimestampableInterface
     protected ?string $password = null;
 
     #[ORM\Column(nullable: true)]
-    protected ?string $lastLoginIp = null;
+    protected ?string $loginIp = null;
 
     #[ORM\Column(nullable: true)]
-    protected ?\DateTimeImmutable $lastLoginAt = null;
+    protected ?\DateTimeImmutable $loginAt = null;
 
     public function getIdentifier(): ?string
     {
@@ -59,26 +59,26 @@ class User implements ResourceInterface, EnableInterface, TimestampableInterface
         return $this;
     }
 
-    public function getLastLoginIp(): ?string
+    public function getLoginIp(): ?string
     {
-        return $this->lastLoginIp;
+        return $this->loginIp;
     }
 
-    public function setLastLoginIp(?string $lastLoginIp): self
+    public function setLoginIp(?string $loginIp): self
     {
-        $this->lastLoginIp = $lastLoginIp;
+        $this->loginIp = $loginIp;
 
         return $this;
     }
 
-    public function getLastLoginAt(): ?\DateTimeImmutable
+    public function getLoginAt(): ?\DateTimeImmutable
     {
-        return $this->lastLoginAt;
+        return $this->loginAt;
     }
 
-    public function setLastLoginAt(\DateTimeImmutable $lastLoginAt): static
+    public function setLoginAt(\DateTimeImmutable $loginAt): static
     {
-        $this->lastLoginAt = $lastLoginAt;
+        $this->loginAt = $loginAt;
 
         return $this;
     }
