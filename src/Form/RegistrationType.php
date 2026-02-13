@@ -11,7 +11,9 @@ use Siganushka\UserBundle\Form\Type\UserIdentifierType;
 use Siganushka\UserBundle\Repository\UserRepository;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Event\PreSetDataEvent;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -29,17 +31,15 @@ class RegistrationType extends AbstractType
             ->add('identifier', UserIdentifierType::class, [
                 'constraints' => new NotBlank(),
             ])
-            ->add('password', RepeatedPasswordType::class, [
-                'constraints' => new NotBlank(groups: ['PasswordRequired']),
-            ])
         ;
+
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, $this->onPreSetData(...));
     }
 
     public function finishView(FormView $view, FormInterface $form, array $options): void
     {
         $data = $form->getData();
         if ($form->has('password') && $data instanceof ResourceInterface && $data->getId()) {
-            // Form fields can be added/removed via extensions.
             $first = $form->get('password')->getConfig()->getOption('first_name', 'first');
 
             $view['password'][$first]->vars['help'] = 'Please do not fill in if you do not want to change the password.';
@@ -59,6 +59,17 @@ class RegistrationType extends AbstractType
                     ? ['Default']
                     : ['Default', 'PasswordRequired'];
             },
+        ]);
+    }
+
+    public function onPreSetData(PreSetDataEvent $event): void
+    {
+        $data = $event->getData();
+        $persisted = $data instanceof User && null !== $data->getId();
+
+        $event->getForm()->add('password', RepeatedPasswordType::class, [
+            'constraints' => new NotBlank(groups: ['PasswordRequired']),
+            'required' => !$persisted,
         ]);
     }
 }
