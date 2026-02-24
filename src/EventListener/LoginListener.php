@@ -23,8 +23,8 @@ class LoginListener
             return;
         }
 
-        $user->setLoginIp($event->getRequest()->getClientIp());
-        $user->setLoginAt(new \DateTimeImmutable());
+        $user->setLastLoginIp($event->getRequest()->getClientIp());
+        $user->setLastLoginAt(new \DateTimeImmutable());
 
         $this->entityManager->flush();
     }
