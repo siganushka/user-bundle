@@ -10,4 +10,6 @@ return [
     'Confirm New Password' => 'Confirm New Password',
     'Current password' => 'Current password',
     'Please do not fill in if you do not want to change the password.' => 'Please do not fill in if you do not want to change the password.',
+    'Last Login Ip' => 'Last Login Ip',
+    'Last Login At' => 'Last Login At',
 ];
