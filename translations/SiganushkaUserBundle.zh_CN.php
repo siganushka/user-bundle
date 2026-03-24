@@ -10,6 +10,4 @@ return [
     'Confirm New Password' => '确认新密码',
     'Current password' => '当前密码',
     'Please do not fill in if you do not want to change the password.' => '不修改密码请不要填写。',
-    'Last Login Ip' => '登录 IP',
-    'Last Login At' => '登录时间',
 ];

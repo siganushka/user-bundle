@@ -6,10 +6,6 @@ Siganushka\UserBundle\Entity\User:
             groups: ['user:item', 'user:collection']
         roles:
             groups: ['user:item', 'user:collection']
-        lastLoginIp:
-            groups: ['user:item', 'user:collection']
-        lastLoginAt:
-            groups: ['user:item', 'user:collection']
         enabled:
             groups: ['user:item', 'user:collection']
         createdAt:

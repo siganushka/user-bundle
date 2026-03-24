@@ -32,4 +32,9 @@ return static function (RoutingConfigurator $routes): void {
         ->controller([UserController::class, 'deleteItem'])
         ->methods(['DELETE'])
     ;
+
+    $routes->add('siganushka_user_getLogins', '/users/{id<\d+>}/logins')
+        ->controller([UserController::class, 'getLogins'])
+        ->methods(['GET'])
+    ;
 };

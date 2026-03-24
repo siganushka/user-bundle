@@ -48,5 +48,6 @@ class RoutesTest extends TestCase
         yield ['siganushka_user_getitem', '/users/{id}', ['GET'], [UserController::class, 'getItem']];
         yield ['siganushka_user_putitem', '/users/{id}', ['PUT', 'PATCH'], [UserController::class, 'putItem']];
         yield ['siganushka_user_deleteitem', '/users/{id}', ['DELETE'], [UserController::class, 'deleteItem']];
+        yield ['siganushka_user_getLogins', '/users/{id}/logins', ['GET'], [UserController::class, 'getLogins']];
     }
 }

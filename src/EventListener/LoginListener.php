@@ -6,8 +6,10 @@ namespace Siganushka\UserBundle\EventListener;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Siganushka\UserBundle\Entity\User;
+use Siganushka\UserBundle\Entity\UserLogin;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
-use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
+use Symfony\Component\Security\Http\Authenticator\InteractiveAuthenticatorInterface;
+use Symfony\Component\Security\Http\Event\LoginSuccessEvent;
 
 #[AsEventListener]
 class LoginListener
@@ -16,15 +18,19 @@ class LoginListener
     {
     }
 
-    public function __invoke(InteractiveLoginEvent $event): void
+    public function __invoke(LoginSuccessEvent $event): void
     {
-        $user = $event->getAuthenticationToken()->getUser();
-        if (!$user instanceof User) {
+        $user = $event->getUser();
+        $authenticator = $event->getAuthenticator();
+        if (!$user instanceof User || !$authenticator instanceof InteractiveAuthenticatorInterface) {
             return;
         }
 
-        $user->setLastLoginIp($event->getRequest()->getClientIp());
-        $user->setLastLoginAt(new \DateTimeImmutable());
+        $login = new UserLogin();
+        $login->setClientIp($event->getRequest()->getClientIp());
+        $login->setUserAgent($event->getRequest()->headers->get('User-Agent'));
+        $login->setAuthenticator($authenticator::class);
+        $user->addLogin($login);
 
         $this->entityManager->flush();
     }

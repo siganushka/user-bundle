@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Siganushka\UserBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Siganushka\Contracts\Doctrine\EnableInterface;
 use Siganushka\Contracts\Doctrine\EnableTrait;
@@ -29,11 +31,17 @@ class User implements ResourceInterface, EnableInterface, TimestampableInterface
     #[ORM\Column]
     protected ?string $password = null;
 
-    #[ORM\Column(nullable: true)]
-    protected ?string $lastLoginIp = null;
+    /**
+     * @var Collection<int, UserLogin>
+     */
+    #[ORM\OneToMany(targetEntity: UserLogin::class, mappedBy: 'user', cascade: ['all'], orphanRemoval: true)]
+    #[ORM\OrderBy(['createdAt' => 'DESC', 'id' => 'DESC'])]
+    protected Collection $logins;
 
-    #[ORM\Column(nullable: true)]
-    protected ?\DateTimeImmutable $lastLoginAt = null;
+    public function __construct()
+    {
+        $this->logins = new ArrayCollection();
+    }
 
     public function getIdentifier(): ?string
     {
@@ -59,26 +67,31 @@ class User implements ResourceInterface, EnableInterface, TimestampableInterface
         return $this;
     }
 
-    public function getLastLoginIp(): ?string
+    /**
+     * @return Collection<int, UserLogin>
+     */
+    public function getLogins(): Collection
     {
-        return $this->lastLoginIp;
+        return $this->logins;
     }
 
-    public function setLastLoginIp(?string $lastLoginIp): self
+    public function addLogin(UserLogin $login): static
     {
-        $this->lastLoginIp = $lastLoginIp;
+        if (!$this->logins->contains($login)) {
+            $this->logins->add($login);
+            $login->setUser($this);
+        }
 
         return $this;
     }
 
-    public function getLastLoginAt(): ?\DateTimeImmutable
+    public function removeLogin(UserLogin $login): static
     {
-        return $this->lastLoginAt;
-    }
-
-    public function setLastLoginAt(\DateTimeImmutable $lastLoginAt): static
-    {
-        $this->lastLoginAt = $lastLoginAt;
+        if ($this->logins->removeElement($login)) {
+            if ($login->getUser() === $this) {
+                $login->setUser(null);
+            }
+        }
 
         return $this;
     }

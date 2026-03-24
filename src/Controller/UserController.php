@@ -86,4 +86,16 @@ class UserController extends AbstractController
 
         return new Response(status: Response::HTTP_NO_CONTENT);
     }
+
+    public function getLogins(PaginatorInterface $paginator, int $id): Response
+    {
+        $entity = $this->repository->find($id)
+            ?? throw $this->createNotFoundException();
+
+        $pagination = $paginator->paginate($entity->getLogins());
+
+        return $this->json($pagination, context: [
+            'groups' => ['user_login:collection'],
+        ]);
+    }
 }
