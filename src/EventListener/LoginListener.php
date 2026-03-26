@@ -26,9 +26,14 @@ class LoginListener
             return;
         }
 
+        $ua = $event->getRequest()->headers->get('User-Agent');
+        if (\is_string($ua)) {
+            $ua = mb_strcut($ua, 0, 255);
+        }
+
         $login = new UserLogin();
         $login->setClientIp($event->getRequest()->getClientIp());
-        $login->setUserAgent($event->getRequest()->headers->get('User-Agent'));
+        $login->setUserAgent($ua);
         $login->setAuthenticator($authenticator::class);
         $user->addLogin($login);
 
