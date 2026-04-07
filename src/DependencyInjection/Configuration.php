@@ -31,7 +31,7 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode($configName)
                     ->defaultValue($entityClass)
                     ->validate()
-                        ->ifTrue(static fn (mixed $v): bool => \is_string($v) && !is_subclass_of($v, $entityClass, true))
+                        ->ifTrue(static fn (mixed $v): bool => \is_string($v) && !is_a($v, $entityClass, true))
                         ->thenInvalid('The value must be instanceof '.$entityClass.', %s given.')
                     ->end()
                 ->end()
