@@ -35,7 +35,7 @@ class User implements ResourceInterface, EnableInterface, TimestampableInterface
      * @var Collection<int, UserLogin>
      */
     #[ORM\OneToMany(targetEntity: UserLogin::class, mappedBy: 'user', cascade: ['all'], orphanRemoval: true)]
-    #[ORM\OrderBy(['createdAt' => 'DESC', 'id' => 'DESC'])]
+    #[ORM\OrderBy(['id' => 'DESC'])]
     protected Collection $logins;
 
     public function __construct()
