@@ -10,7 +10,7 @@ use Siganushka\Contracts\Doctrine\CreatableTrait;
 use Siganushka\Contracts\Doctrine\ResourceInterface;
 use Siganushka\Contracts\Doctrine\ResourceTrait;
 
-#[ORM\Entity]
+#[ORM\Entity(readOnly: true)]
 class UserLogin implements ResourceInterface, CreatableInterface
 {
     use ResourceTrait;
