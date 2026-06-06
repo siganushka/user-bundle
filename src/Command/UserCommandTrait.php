@@ -19,10 +19,8 @@ trait UserCommandTrait
             throw new \InvalidArgumentException('[identifier] The value must be a string.');
         }
 
-        $entity = $this->repository->findOneByIdentifier($identifier);
-        if (!$entity) {
-            throw new \InvalidArgumentException(\sprintf('[identifier] User with value "%s" not found.', $identifier));
-        }
+        $entity = $this->repository->findOneByIdentifier($identifier)
+            ?? throw new \InvalidArgumentException(\sprintf('[identifier] User with value "%s" not found.', $identifier));
 
         return $entity;
     }
