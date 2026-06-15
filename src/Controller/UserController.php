@@ -24,7 +24,7 @@ class UserController extends AbstractController
         $pagination = $paginator->paginate($queryBuilder);
 
         return $this->json($pagination, context: [
-            'groups' => ['user:collection'],
+            'groups' => ['user.collection'],
         ]);
     }
 
@@ -43,7 +43,7 @@ class UserController extends AbstractController
         $entityManager->flush();
 
         return $this->json($entity, Response::HTTP_CREATED, context: [
-            'groups' => ['user:item'],
+            'groups' => ['user.item'],
         ]);
     }
 
@@ -53,7 +53,7 @@ class UserController extends AbstractController
             ?? throw $this->createNotFoundException();
 
         return $this->json($entity, context: [
-            'groups' => ['user:item'],
+            'groups' => ['user.item'],
         ]);
     }
 
@@ -72,7 +72,7 @@ class UserController extends AbstractController
         $entityManager->flush();
 
         return $this->json($entity, context: [
-            'groups' => ['user:item'],
+            'groups' => ['user.item'],
         ]);
     }
 
@@ -95,7 +95,7 @@ class UserController extends AbstractController
         $pagination = $paginator->paginate($entity->getLogins());
 
         return $this->json($pagination, context: [
-            'groups' => ['user_login:collection'],
+            'groups' => ['user_login.collection'],
         ]);
     }
 }
