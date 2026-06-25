@@ -6,6 +6,7 @@ namespace Siganushka\UserBundle\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
+use Siganushka\UserBundle\Entity\User;
 use Siganushka\UserBundle\Form\UserType;
 use Siganushka\UserBundle\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -47,21 +48,15 @@ class UserController extends AbstractController
         ]);
     }
 
-    public function getItem(int $id): Response
+    public function getItem(User $entity): Response
     {
-        $entity = $this->repository->find($id)
-            ?? throw $this->createNotFoundException();
-
         return $this->json($entity, context: [
             'groups' => ['user.item'],
         ]);
     }
 
-    public function putItem(Request $request, EntityManagerInterface $entityManager, int $id): Response
+    public function putItem(Request $request, EntityManagerInterface $entityManager, User $entity): Response
     {
-        $entity = $this->repository->find($id)
-            ?? throw $this->createNotFoundException();
-
         $form = $this->createForm(UserType::class, $entity);
         $form->submit($request->getPayload()->all(), !$request->isMethod('PATCH'));
 
@@ -76,22 +71,16 @@ class UserController extends AbstractController
         ]);
     }
 
-    public function deleteItem(EntityManagerInterface $entityManager, int $id): Response
+    public function deleteItem(EntityManagerInterface $entityManager, User $entity): Response
     {
-        $entity = $this->repository->find($id)
-            ?? throw $this->createNotFoundException();
-
         $entityManager->remove($entity);
         $entityManager->flush();
 
         return new Response(status: Response::HTTP_NO_CONTENT);
     }
 
-    public function getLogins(PaginatorInterface $paginator, int $id): Response
+    public function getLogins(PaginatorInterface $paginator, User $entity): Response
     {
-        $entity = $this->repository->find($id)
-            ?? throw $this->createNotFoundException();
-
         $pagination = $paginator->paginate($entity->getLogins());
 
         return $this->json($pagination, context: [
