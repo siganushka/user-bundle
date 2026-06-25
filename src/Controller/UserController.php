@@ -20,8 +20,8 @@ class UserController extends AbstractController
 
     public function getCollection(PaginatorInterface $paginator): Response
     {
-        $queryBuilder = $this->repository->createQueryBuilderWithOrderBy('u');
-        $pagination = $paginator->paginate($queryBuilder);
+        $qb = $this->repository->createQueryBuilderWithOrderBy('u');
+        $pagination = $paginator->paginate($qb);
 
         return $this->json($pagination, context: [
             'groups' => ['user.collection'],
