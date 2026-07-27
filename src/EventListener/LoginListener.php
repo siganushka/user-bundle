@@ -20,6 +20,11 @@ class LoginListener
 
     public function __invoke(LoginSuccessEvent $event): void
     {
+        $user = $event->getUser();
+        if (!$user instanceof User) {
+            return;
+        }
+
         $authenticator = $event->getAuthenticator();
         if (!($authenticator instanceof InteractiveAuthenticatorInterface && $authenticator->isInteractive())) {
             return;
@@ -35,9 +40,6 @@ class LoginListener
         $login->setClientIp($request->getClientIp());
         $login->setUserAgent($ua);
         $login->setAuthenticator($authenticator::class);
-
-        /** @var User */
-        $user = $event->getUser();
         $user->addLogin($login);
 
         $this->entityManager->flush();
