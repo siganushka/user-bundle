@@ -23,8 +23,8 @@ class UserResetPasswordCommand extends Command
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly FormFactoryInterface $formFactory,
-        private readonly UserRepository $repository,
-    ) {
+        private readonly UserRepository $repository)
+    {
         parent::__construct();
     }
 

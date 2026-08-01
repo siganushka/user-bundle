@@ -20,8 +20,8 @@ class UserDisableCommand extends Command
 
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
-        private readonly UserRepository $repository,
-    ) {
+        private readonly UserRepository $repository)
+    {
         parent::__construct();
     }
 
