@@ -9,15 +9,16 @@ use Siganushka\Contracts\Doctrine\CreatableInterface;
 use Siganushka\Contracts\Doctrine\CreatableTrait;
 use Siganushka\Contracts\Doctrine\ResourceInterface;
 use Siganushka\Contracts\Doctrine\ResourceTrait;
+use Siganushka\UserBundle\Repository\UserLoginRepository;
 
-#[ORM\Entity(readOnly: true)]
-class UserLogin implements ResourceInterface, CreatableInterface
+#[ORM\MappedSuperclass(repositoryClass: UserLoginRepository::class)]
+abstract class AbstractUserLogin implements ResourceInterface, CreatableInterface
 {
     use ResourceTrait;
     use CreatableTrait;
 
     #[ORM\ManyToOne(inversedBy: 'logins')]
-    protected ?User $user = null;
+    protected ?AbstractUser $user = null;
 
     #[ORM\Column(nullable: true)]
     protected ?string $clientIp = null;
@@ -28,12 +29,12 @@ class UserLogin implements ResourceInterface, CreatableInterface
     #[ORM\Column]
     protected ?string $authenticator = null;
 
-    public function getUser(): ?User
+    public function getUser(): ?AbstractUser
     {
         return $this->user;
     }
 
-    public function setUser(?User $user): static
+    public function setUser(?AbstractUser $user): static
     {
         $this->user = $user;
 

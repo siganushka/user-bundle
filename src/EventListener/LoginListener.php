@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Siganushka\UserBundle\EventListener;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Siganushka\UserBundle\Entity\User;
-use Siganushka\UserBundle\Entity\UserLogin;
+use Siganushka\UserBundle\Entity\AbstractUser;
+use Siganushka\UserBundle\Repository\UserLoginRepository;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\Security\Http\Authenticator\InteractiveAuthenticatorInterface;
 use Symfony\Component\Security\Http\Event\LoginSuccessEvent;
@@ -14,14 +14,16 @@ use Symfony\Component\Security\Http\Event\LoginSuccessEvent;
 #[AsEventListener]
 class LoginListener
 {
-    public function __construct(private readonly EntityManagerInterface $entityManager)
+    public function __construct(
+        private readonly EntityManagerInterface $entityManager,
+        private readonly UserLoginRepository $userLoginRepository)
     {
     }
 
     public function __invoke(LoginSuccessEvent $event): void
     {
         $user = $event->getUser();
-        if (!$user instanceof User) {
+        if (!$user instanceof AbstractUser) {
             return;
         }
 
@@ -36,7 +38,7 @@ class LoginListener
             $ua = mb_strcut($ua, 0, 255);
         }
 
-        $login = new UserLogin();
+        $login = $this->userLoginRepository->createNew();
         $login->setClientIp($request->getClientIp());
         $login->setUserAgent($ua);
         $login->setAuthenticator($authenticator::class);

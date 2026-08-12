@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Siganushka\UserBundle\Form;
 
 use Siganushka\Contracts\Doctrine\ResourceInterface;
-use Siganushka\UserBundle\Entity\User;
+use Siganushka\UserBundle\Entity\AbstractUser;
 use Siganushka\UserBundle\Form\Type\RepeatedPasswordType;
 use Siganushka\UserBundle\Form\Type\UserIdentifierType;
 use Siganushka\UserBundle\Repository\UserRepository;
@@ -51,7 +51,7 @@ class RegistrationType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => $this->repository->getClassName(),
-            'constraints' => new UniqueEntity('identifier', entityClass: User::class),
+            'constraints' => new UniqueEntity('identifier', entityClass: AbstractUser::class),
             'validation_groups' => static function (FormInterface $form) {
                 $data = $form->getData();
 
@@ -65,7 +65,7 @@ class RegistrationType extends AbstractType
     public function onPreSetData(PreSetDataEvent $event): void
     {
         $data = $event->getData();
-        $persisted = $data instanceof User && null !== $data->getId();
+        $persisted = $data instanceof AbstractUser && null !== $data->getId();
 
         $event->getForm()->add('password', RepeatedPasswordType::class, [
             'constraints' => new NotBlank(groups: ['PasswordRequired']),

@@ -1,4 +1,4 @@
-Siganushka\UserBundle\Entity\User:
+Siganushka\UserBundle\Entity\AbstractUser:
     attributes:
         id:
             groups: [user.item, user.collection]

@@ -22,37 +22,31 @@ class SiganushkaUserExtension extends Extension implements PrependExtensionInter
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        foreach (Configuration::$resourceMapping as $configName => [, $repositoryClass]) {
-            $repository = $container->findDefinition($repositoryClass);
-            $repository->setArgument('$entityClass', $config[$configName]);
+        foreach (Configuration::RESOURCE_MAPPING as $configName => [, $repositoryClass]) {
+            $repositoryClass = $container->findDefinition($repositoryClass);
+            $repositoryClass->setArgument('$entityClass', $config[$configName]);
         }
-
-        $container->setAlias(IdentifierTypeInterface::class, $config['identifier_type']);
 
         $repeatedPasswordType = $container->findDefinition(RepeatedPasswordType::class);
         $repeatedPasswordType->setArgument('$passwordStrengthMinScore', $config['password_strength_min_score']);
+
+        $container->setAlias(IdentifierTypeInterface::class, $config['identifier_type']);
     }
 
     public function prepend(ContainerBuilder $container): void
     {
         $configs = $container->getExtensionConfig($this->getAlias());
+        $config = array_merge(...$configs);
 
-        $configuration = new Configuration();
-        $config = $this->processConfiguration($configuration, $configs);
-
-        $mappingOverride = [];
-        foreach (Configuration::$resourceMapping as $configName => [$entityClass]) {
-            if ($config[$configName] !== $entityClass) {
-                $mappingOverride[$entityClass] = $config[$configName];
-            }
+        $resolveTargetEntities = [];
+        foreach (Configuration::RESOURCE_MAPPING as $configName => [$interface]) {
+            $resolveTargetEntities[$interface] = $config[$configName] ?? null;
         }
 
-        $container->prependExtensionConfig('doctrine', [
-            'orm' => ['resolve_target_entities' => $mappingOverride],
-        ]);
-
-        $container->prependExtensionConfig('siganushka_generic', [
-            'doctrine' => ['mapping_override' => $mappingOverride],
-        ]);
+        if (\count($rte = array_filter($resolveTargetEntities))) {
+            $container->prependExtensionConfig('doctrine', [
+                'orm' => ['resolve_target_entities' => $rte],
+            ]);
+        }
     }
 }

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Siganushka\UserBundle\Command;
 
-use Siganushka\UserBundle\Entity\User;
+use Siganushka\UserBundle\Entity\AbstractUser;
 use Siganushka\UserBundle\Repository\UserRepository;
 use Symfony\Component\Console\Input\InputInterface;
 
@@ -12,7 +12,7 @@ trait UserCommandTrait
 {
     private readonly UserRepository $repository;
 
-    public function getUserByArgument(InputInterface $input): User
+    public function getUserByArgument(InputInterface $input): AbstractUser
     {
         $identifier = $input->getArgument('identifier');
         if (!\is_string($identifier)) {

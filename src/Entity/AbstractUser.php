@@ -17,9 +17,9 @@ use Siganushka\UserBundle\Repository\UserRepository;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-#[ORM\Entity(repositoryClass: UserRepository::class)]
+#[ORM\MappedSuperclass(repositoryClass: UserRepository::class)]
 #[ORM\UniqueConstraint(columns: ['identifier'])]
-class User implements ResourceInterface, EnableInterface, TimestampableInterface, UserInterface, PasswordAuthenticatedUserInterface
+abstract class AbstractUser implements ResourceInterface, EnableInterface, TimestampableInterface, UserInterface, PasswordAuthenticatedUserInterface
 {
     use EnableTrait;
     use ResourceTrait;
@@ -32,9 +32,9 @@ class User implements ResourceInterface, EnableInterface, TimestampableInterface
     protected ?string $password = null;
 
     /**
-     * @var Collection<int, UserLogin>
+     * @var Collection<int, AbstractUserLogin>
      */
-    #[ORM\OneToMany(targetEntity: UserLogin::class, mappedBy: 'user', cascade: ['all'], orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: AbstractUserLogin::class, mappedBy: 'user', cascade: ['all'], orphanRemoval: true)]
     #[ORM\OrderBy(['id' => 'DESC'])]
     protected Collection $logins;
 
@@ -68,14 +68,14 @@ class User implements ResourceInterface, EnableInterface, TimestampableInterface
     }
 
     /**
-     * @return Collection<int, UserLogin>
+     * @return Collection<int, AbstractUserLogin>
      */
     public function getLogins(): Collection
     {
         return $this->logins;
     }
 
-    public function addLogin(UserLogin $login): static
+    public function addLogin(AbstractUserLogin $login): static
     {
         if (!$this->logins->contains($login)) {
             $this->logins->add($login);
@@ -85,7 +85,7 @@ class User implements ResourceInterface, EnableInterface, TimestampableInterface
         return $this;
     }
 
-    public function removeLogin(UserLogin $login): static
+    public function removeLogin(AbstractUserLogin $login): static
     {
         if ($this->logins->removeElement($login)) {
             if ($login->getUser() === $this) {

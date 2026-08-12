@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Siganushka\UserBundle\Command;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Siganushka\UserBundle\Entity\User;
+use Siganushka\UserBundle\Entity\AbstractUser;
 use Siganushka\UserBundle\Form\UserType;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -70,7 +70,7 @@ class UserCreateCommand extends Command
             }
         }
 
-        /** @var User */
+        /** @var AbstractUser */
         $user = $this->form->getData();
 
         $this->entityManager->persist($user);

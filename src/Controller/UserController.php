@@ -6,7 +6,7 @@ namespace Siganushka\UserBundle\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
-use Siganushka\UserBundle\Entity\User;
+use Siganushka\UserBundle\Entity\AbstractUser;
 use Siganushka\UserBundle\Form\UserType;
 use Siganushka\UserBundle\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -48,14 +48,14 @@ class UserController extends AbstractController
         ]);
     }
 
-    public function getItem(User $entity): Response
+    public function getItem(AbstractUser $entity): Response
     {
         return $this->json($entity, context: [
             'groups' => ['user.item'],
         ]);
     }
 
-    public function putItem(Request $request, EntityManagerInterface $entityManager, User $entity): Response
+    public function putItem(Request $request, EntityManagerInterface $entityManager, AbstractUser $entity): Response
     {
         $form = $this->createForm(UserType::class, $entity);
         $form->submit($request->getPayload()->all(), !$request->isMethod('PATCH'));
@@ -71,7 +71,7 @@ class UserController extends AbstractController
         ]);
     }
 
-    public function deleteItem(EntityManagerInterface $entityManager, User $entity): Response
+    public function deleteItem(EntityManagerInterface $entityManager, AbstractUser $entity): Response
     {
         $entityManager->remove($entity);
         $entityManager->flush();
@@ -79,7 +79,7 @@ class UserController extends AbstractController
         return new Response(status: Response::HTTP_NO_CONTENT);
     }
 
-    public function getLogins(PaginatorInterface $paginator, User $entity): Response
+    public function getLogins(PaginatorInterface $paginator, AbstractUser $entity): Response
     {
         $pagination = $paginator->paginate($entity->getLogins());
 
