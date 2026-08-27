@@ -20,10 +20,12 @@ class ChangePasswordType extends AbstractType
                 'translation_domain' => 'SiganushkaUserBundle',
                 'constraints' => new UserPassword(),
                 'mapped' => false,
+                'priority' => 0,
             ])
             ->add('newPassword', RepeatedPasswordType::class, [
                 'label' => 'New Password',
                 'constraints' => new NotBlank(),
+                'priority' => -10,
             ])
         ;
     }

@@ -30,6 +30,7 @@ class RegistrationType extends AbstractType
         $builder
             ->add('identifier', UserIdentifierType::class, [
                 'constraints' => new NotBlank(),
+                'priority' => 0,
             ])
         ;
 
@@ -69,6 +70,7 @@ class RegistrationType extends AbstractType
 
         $event->getForm()->add('password', RepeatedPasswordType::class, [
             'constraints' => new NotBlank(groups: ['PasswordRequired']),
+            'priority' => -10,
             'required' => !$persisted,
         ]);
     }
