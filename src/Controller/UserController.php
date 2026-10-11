@@ -6,12 +6,14 @@ namespace Siganushka\UserBundle\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
+use Siganushka\UserBundle\Dto\UserQueryDto;
 use Siganushka\UserBundle\Entity\AbstractUser;
 use Siganushka\UserBundle\Form\UserType;
 use Siganushka\UserBundle\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\MapQueryString;
 
 class UserController extends AbstractController
 {
@@ -19,9 +21,9 @@ class UserController extends AbstractController
     {
     }
 
-    public function getCollection(PaginatorInterface $paginator): Response
+    public function getCollection(PaginatorInterface $paginator, #[MapQueryString] UserQueryDto $dto): Response
     {
-        $qb = $this->repository->createQueryBuilderWithOrderBy('u');
+        $qb = $this->repository->createQueryBuilderFromDto('u', $dto);
         $pagination = $paginator->paginate($qb);
 
         return $this->json($pagination, context: [
