@@ -23,7 +23,11 @@ class UserController extends AbstractController
 
     public function getCollection(PaginatorInterface $paginator, #[MapQueryString] UserQueryDto $dto): Response
     {
-        $qb = $this->repository->createQueryBuilderFromDto('u', $dto);
+        $criteria = UserRepository::createCriteriaFromDto($dto);
+
+        $qb = $this->repository->createQueryBuilderWithOrderBy('u');
+        $qb->addCriteria($criteria);
+
         $pagination = $paginator->paginate($qb);
 
         return $this->json($pagination, context: [
