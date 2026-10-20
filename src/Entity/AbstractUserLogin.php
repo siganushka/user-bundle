@@ -16,7 +16,7 @@ abstract class AbstractUserLogin implements CreatableInterface
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\Column(options: ['unsigned' => true])]
     protected ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'logins')]
