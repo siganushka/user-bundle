@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Siganushka\UserBundle\Form;
 
-use Siganushka\Contracts\Doctrine\ResourceInterface;
 use Siganushka\UserBundle\Entity\AbstractUser;
 use Siganushka\UserBundle\Form\Type\RepeatedPasswordType;
 use Siganushka\UserBundle\Form\Type\UserIdentifierType;
@@ -40,7 +39,7 @@ class RegistrationType extends AbstractType
     public function finishView(FormView $view, FormInterface $form, array $options): void
     {
         $data = $form->getData();
-        if ($form->has('password') && $data instanceof ResourceInterface && $data->getId()) {
+        if ($form->has('password') && $data instanceof AbstractUser && $data->getId()) {
             $first = $form->get('password')->getConfig()->getOption('first_name', 'first');
 
             $view['password'][$first]->vars['help'] = 'Please do not fill in if you do not want to change the password.';
@@ -56,7 +55,7 @@ class RegistrationType extends AbstractType
             'validation_groups' => static function (FormInterface $form) {
                 $data = $form->getData();
 
-                return $data instanceof ResourceInterface && $data->getId()
+                return $data instanceof AbstractUser && $data->getId()
                     ? ['Default']
                     : ['Default', 'PasswordRequired'];
             },

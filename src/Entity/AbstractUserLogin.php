@@ -7,15 +7,17 @@ namespace Siganushka\UserBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Siganushka\Contracts\Doctrine\CreatableInterface;
 use Siganushka\Contracts\Doctrine\CreatableTrait;
-use Siganushka\Contracts\Doctrine\ResourceInterface;
-use Siganushka\Contracts\Doctrine\ResourceTrait;
 use Siganushka\UserBundle\Repository\UserLoginRepository;
 
 #[ORM\MappedSuperclass(repositoryClass: UserLoginRepository::class)]
-abstract class AbstractUserLogin implements ResourceInterface, CreatableInterface
+abstract class AbstractUserLogin implements CreatableInterface
 {
-    use ResourceTrait;
     use CreatableTrait;
+
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    protected ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'logins')]
     protected ?AbstractUser $user = null;
@@ -28,6 +30,11 @@ abstract class AbstractUserLogin implements ResourceInterface, CreatableInterfac
 
     #[ORM\Column]
     protected ?string $authenticator = null;
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
 
     public function getUser(): ?AbstractUser
     {

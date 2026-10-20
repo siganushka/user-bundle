@@ -9,8 +9,6 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Siganushka\Contracts\Doctrine\EnableInterface;
 use Siganushka\Contracts\Doctrine\EnableTrait;
-use Siganushka\Contracts\Doctrine\ResourceInterface;
-use Siganushka\Contracts\Doctrine\ResourceTrait;
 use Siganushka\Contracts\Doctrine\TimestampableInterface;
 use Siganushka\Contracts\Doctrine\TimestampableTrait;
 use Siganushka\UserBundle\Repository\UserRepository;
@@ -19,11 +17,15 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\MappedSuperclass(repositoryClass: UserRepository::class)]
 #[ORM\UniqueConstraint(columns: ['identifier'])]
-abstract class AbstractUser implements ResourceInterface, EnableInterface, TimestampableInterface, UserInterface, PasswordAuthenticatedUserInterface
+abstract class AbstractUser implements EnableInterface, TimestampableInterface, UserInterface, PasswordAuthenticatedUserInterface
 {
     use EnableTrait;
-    use ResourceTrait;
     use TimestampableTrait;
+
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    protected ?int $id = null;
 
     #[ORM\Column]
     protected ?string $identifier = null;
@@ -41,6 +43,11 @@ abstract class AbstractUser implements ResourceInterface, EnableInterface, Times
     public function __construct()
     {
         $this->logins = new ArrayCollection();
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
     }
 
     public function getIdentifier(): ?string
