@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Siganushka\UserBundle\Command;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Siganushka\UserBundle\Repository\UserRepository;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -18,9 +17,7 @@ class UserDisableCommand extends Command
 {
     use UserCommandTrait;
 
-    public function __construct(
-        private readonly EntityManagerInterface $entityManager,
-        private readonly UserRepository $repository)
+    public function __construct(private readonly EntityManagerInterface $entityManager)
     {
         parent::__construct();
     }

@@ -6,7 +6,6 @@ namespace Siganushka\UserBundle\Command;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Siganushka\UserBundle\Form\ResetPasswordType;
-use Siganushka\UserBundle\Repository\UserRepository;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -22,8 +21,7 @@ class UserResetPasswordCommand extends Command
 
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
-        private readonly FormFactoryInterface $formFactory,
-        private readonly UserRepository $repository)
+        private readonly FormFactoryInterface $formFactory)
     {
         parent::__construct();
     }

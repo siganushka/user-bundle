@@ -7,10 +7,12 @@ namespace Siganushka\UserBundle\Command;
 use Siganushka\UserBundle\Entity\AbstractUser;
 use Siganushka\UserBundle\Repository\UserRepository;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Contracts\Service\Attribute\Required;
 
 trait UserCommandTrait
 {
-    private readonly UserRepository $repository;
+    #[Required]
+    public UserRepository $repository;
 
     public function getUserByArgument(InputInterface $input): AbstractUser
     {
