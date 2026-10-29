@@ -17,4 +17,11 @@ class TestPlainUser implements UserInterface
     {
         return 'other@example.com';
     }
+
+    /**
+     * Required by symfony/security-core 7.4, removed from UserInterface in 8.0.
+     */
+    public function eraseCredentials(): void
+    {
+    }
 }
