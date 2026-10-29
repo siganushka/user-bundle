@@ -55,7 +55,7 @@ abstract class AbstractUser implements EnableInterface, TimestampableInterface, 
         return $this->identifier;
     }
 
-    public function setIdentifier(?string $identifier): self
+    public function setIdentifier(?string $identifier): static
     {
         $this->identifier = $identifier;
 
@@ -67,7 +67,7 @@ abstract class AbstractUser implements EnableInterface, TimestampableInterface, 
         return $this->password;
     }
 
-    public function setPassword(?string $password): self
+    public function setPassword(?string $password): static
     {
         $this->password = $password;
 

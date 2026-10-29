@@ -53,7 +53,7 @@ abstract class AbstractUserLogin implements CreatableInterface
         return $this->clientIp;
     }
 
-    public function setClientIp(?string $clientIp): self
+    public function setClientIp(?string $clientIp): static
     {
         $this->clientIp = $clientIp;
 
@@ -65,7 +65,7 @@ abstract class AbstractUserLogin implements CreatableInterface
         return $this->userAgent;
     }
 
-    public function setUserAgent(?string $userAgent): self
+    public function setUserAgent(?string $userAgent): static
     {
         $this->userAgent = $userAgent;
 
@@ -77,7 +77,7 @@ abstract class AbstractUserLogin implements CreatableInterface
         return $this->authenticator;
     }
 
-    public function setAuthenticator(?string $authenticator): self
+    public function setAuthenticator(?string $authenticator): static
     {
         $this->authenticator = $authenticator;
 
