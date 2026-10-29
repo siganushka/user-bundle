@@ -26,12 +26,12 @@ class AbstractUserTest extends TestCase
         static::assertSame('user@example.com', $this->createUser()->getUserIdentifier());
     }
 
-    public function testUserIdentifierFallsBackToObjectHashWhenIdentifierIsNull(): void
+    public function testUserIdentifierFallsBackToObjectIdWhenIdentifierIsNull(): void
     {
         $user = $this->createUser(null);
 
         static::assertNull($user->getIdentifier());
-        static::assertSame(spl_object_hash($user), $user->getUserIdentifier());
+        static::assertSame((string) spl_object_id($user), $user->getUserIdentifier());
         static::assertNotSame('', $user->getUserIdentifier());
     }
 

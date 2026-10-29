@@ -116,7 +116,7 @@ abstract class AbstractUser implements EnableInterface, TimestampableInterface, 
     public function getUserIdentifier(): string
     {
         /** @var non-empty-string */
-        $ret = $this->identifier ?? spl_object_hash($this);
+        $ret = $this->identifier ?? (string) spl_object_id($this);
 
         return $ret;
     }
